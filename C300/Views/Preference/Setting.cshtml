@@ -1,0 +1,746 @@
+@model Preference
+@{
+    ViewData["Title"] = "Preference";
+}
+@*<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>*@
+<script>
+    $(document).ready(function () {
+        $("#tempSave").hide();
+        $("#tempReset").hide();
+        //$("#tempEdit").show();
+
+        $("#humSave").hide();
+        $("#humReset").hide();
+        //$("#humEdit").show();
+
+        $("#lightSave").hide();
+        $("#lightReset").hide();
+        //$("#lightEdit").show();
+
+        $("#weightSave").hide();
+        $("#weightReset").hide();
+        //$("#weightEdit").show();
+
+        //$("#tempEdit").click(function () {
+        //    $("#tempSave").show();
+        //    $("#tempReset").show();
+        //    $("#tempEdit").hide();
+        //    $('#txtLowTemp').prop('readonly', false);
+        //    $('#txtHighTemp').prop('readonly', false);
+        //});
+
+        //$("#humEdit").click(function () {
+        //    $("#humSave").show();
+        //    $("#humReset").show();
+        //    $("#humEdit").hide();
+        //    $('#txtLowHum').prop('readonly', false);
+        //    $('#txtHighHum').prop('readonly', false);
+        //});
+
+        //$("#lightEdit").click(function () {
+        //    $("#lightSave").show();
+        //    $("#lightReset").show();
+        //    $("#lightEdit").hide();
+        //    $('#txtLowLight').prop('readonly', false);
+        //    $('#txtHighLight').prop('readonly', false);
+        //});
+
+        //$("#weightEdit").click(function () {
+        //    $("#weightSave").show();
+        //    $("#weightReset").show();
+        //    $("#weightEdit").hide();
+        //    $('#txtLowWeight').prop('readonly', false);
+        //    $('#txtHighWeight').prop('readonly', false);
+        //});
+
+        //$('input').on('blur keyup', function () {
+        //    if ($("#myform").valid()) {
+        //        $('#tempSave').prop('disabled', false);
+        //        $('#humSave').prop('disabled', false);
+        //        $('#lightSave').prop('disabled', false);
+        //        $('#weightSave').prop('disabled', false);
+        //    } else {
+        //        $('#tempSave').prop('disabled', 'disabled');
+        //        $('#humSave').prop('disabled', 'disabled');
+        //        $('#lightSave').prop('disabled', 'disabled');
+        //        $('#weightSave').prop('disabled', 'disabled');
+        //    }
+        //});
+
+        //$("#tempSave").click(function () {
+        //    if ($("#myform").valid()) {
+        //        console.log(2)
+        //        //$('#tempSave').prop('disabled', false);
+        //        $("#tempSave").hide();
+        //        $("#tempReset").hide();
+        //        $("#tempEdit").show();
+        //        $('#txtLowTemp').prop('readonly', true);
+        //        $('#txtHighTemp').prop('readonly', true);
+        //    }
+        //});
+
+        //$("#humSave").click(function () {
+        //    if ($("#myform").valid()) {
+        //        $("#humSave").hide();
+        //        $("#humReset").hide();
+        //        $("#humEdit").show();
+        //        $('#txtLowHum').prop('readonly', true);
+        //        $('#txtHighHum').prop('readonly', true);
+        //    }
+        //});
+
+        //$("#lightSave").click(function () {
+        //    if ($("#myform").valid()) {
+        //        $("#lightSave").hide();
+        //        $("#lightReset").hide();
+        //        $("#lightEdit").show();
+        //        $('#txtLowLight').prop('readonly', true);
+        //        $('#txtHighLight').prop('readonly', true);
+        //    }
+        //});
+
+        //$("#weightSave").click(function () {
+        //    if ($("#myform").valid()) {
+        //        $("#weightSave").hide();
+        //        $("#weightReset").hide();
+        //        $("#weightEdit").show();
+        //        $('#txtLowWeight').prop('readonly', true);
+        //        $('#txtHighWeight').prop('readonly', true);
+        //    }
+        //});
+        var intRegex = /-?^\d+$/;
+        var floatRegex = /-?^((\d+(\.\d *)?)|-?((\d*\.)?\d+))$/;
+        var check = 1;
+        function checkLow(name) {
+            var val = $("#low"+name).val();
+            if (intRegex.test(val) || floatRegex.test(val)) {
+                //val = val.replace(/-?^0+/, '');
+                var high = parseFloat($("#high"+name).val());
+                if (val > high) {
+                    $("#erlow" + name).html("Please enter number lower than " + $("#high" + name).val() + "!");
+                    check = 0;
+                }
+                else {
+                    $("#erlow"+name).html("");
+                    $("#erhigh" + name).html("");
+                    check = 1;
+                }
+            }
+            else {
+                $("#erlowTemp").html("Please enter number!");
+                check = 0;
+            }
+        }
+        function checkHigh(name) {
+            var val = $("#high"+name).val();
+            if (intRegex.test(val) || floatRegex.test(val)) {
+                var low = parseFloat($("#low"+name).val());
+                if (val < low) {
+                    $("#erhigh" + name).html("Please enter number higher than " + $("#low" + name).val() + "!");
+                    check = 0;
+                }
+                else {
+                    $("#erhigh"+name).html("");
+                    $("#erlow" + name).html("");
+                    check = 1;
+                }
+            }
+            else {
+                $("#erhigh" + name).html("Please enter number!");
+                check = 0;
+            }
+
+        }
+        function checkValid(name) {
+            if (check == 0) {
+                $(name).prop('disabled', true);
+                //$("#saveHum").attr('disabled', 'disabled');
+
+            }
+            else {
+                $(name).prop('disabled', false);
+                //$("#saveHum").removeAttr('disabled');
+            }
+
+        } 
+
+        $("#lowTemp").keyup(function () { 
+            //var val = $("#lowTemp").val();            
+            //if (intRegex.test(val) || floatRegex.test(val)) {
+            //    //val = val.replace(/-?^0+/, '');
+            //    var high = parseFloat($("#highTemp").val());
+            //    if (val > high) {
+            //        $("#erlowTemp").html("Please enter number lower than " + $("#highTemp").val() + "!");
+            //    }
+            //    else {
+            //        $("#erlowTemp").html("");
+            //        $("#erhighTemp").html("");
+            //    }
+            //}
+            //else {
+            //    $("#erlowTemp").html("Please enter number!");
+            //}
+            checkLow("Temp");
+            checkValid("#saveTemp");
+            
+        });
+        $("#highTemp").keyup(function () {
+            //var val = $("#highTemp").val();
+            //console.log(val)
+            //if (intRegex.test(val) || floatRegex.test(val)) {
+            //    var low = parseFloat($("#lowTemp").val());
+            //    if (val < low) {
+            //        $("#erhighTemp").html("Please enter number higher than " + $("#lowTemp").val() + "!");
+            //    }
+            //    else {
+            //        $("#erhighTemp").html("");
+            //        $("#erlowTemp").html("");
+            //    }
+            //}
+            //else {
+            //    $("#erhighTemp").html("Please enter number!");
+            //}
+            checkHigh("Temp");
+            checkValid("#saveTemp");
+        });
+        $("#lowHum").keyup(function () {
+            checkLow("Hum");
+            checkValid("#saveHum");
+        });
+        $("#highHum").keyup(function () {
+            checkHigh("Hum");
+            checkValid("#saveHum");
+        });
+        $("#lowLight").keyup(function () {
+            checkLow("Light");
+            checkValid("#saveLight");
+        });
+        $("#highLight").keyup(function () {
+            checkHigh("Light");
+            checkValid("#saveLight");
+        });
+        $("#lowWeight").keyup(function () {
+            checkLow("Weight");
+            checkValid("#saveWeight");
+        });
+        $("#highWeight").keyup(function () {
+            checkHigh("Weight");
+            checkValid("#saveWeight");
+        });
+        $("#drpTemp1").change(function () {
+            checkValid("#saveTemp");
+        });
+        $("#drpTemp").change(function () {
+            checkValid("#saveTemp");
+        });
+        $("#drpHum").change(function () {
+            console.log("fer")
+            checkValid("#saveHum");
+        });
+        $("#drpLight").change(function () {
+            checkValid("#saveLight");
+        });
+        $("#drpWeight1").change(function () {
+            checkValid("#saveWeight");
+        });
+        $("#drpWeight").change(function () {
+            checkValid("#saveWeight");
+        });
+    });
+</script>
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: Verdana;
+        font-size: small
+    }
+    h3 {
+        font-family: Verdana;
+        font-size: 160%;
+        margin-left: 0%;
+        /*font-weight:bolder;*/
+    }
+    h2 {
+        font-family: Verdana;
+        font-size: 230%;
+        margin-left: 3%;
+    }
+    /*.form-group {
+        //padding: 0 10px;
+        height: auto;
+    }*/
+    /*input,select {
+        font-size: small;
+    }*/
+    label,select {
+        font-family: Verdana;
+        font-size: small;
+        color:black;
+    }
+
+    /*Edit,Save*/
+    .btn-info {
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        /*background-color: #0889B2;*/
+        color: white;
+        font-size: small;
+    }
+    .edit {
+        background-color: #0889B2;
+    }
+    .save {
+        background-color: #00C851;
+    }
+    .reset {
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        font-size: small;
+    }
+    /*.reset:hover {
+        background-color: #00C851;
+        color: white;
+    }*/
+    .cancel {
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: white;
+        color: #00C851;
+        border-color: #00C851;
+        font-size: small;
+    }
+    .text-primary {
+        color: #00C851;
+    }
+</style>
+
+
+<h2 style="color:orange ; font-weight: bold;">Preference</h2>
+
+
+<form id="myform" asp-controller="Preference" asp-action="Setting" class="form-horizontal col-sm-offset-1" role="form">
+    <span style="color:red">@TempData["Msg"]</span><br />
+    <div class="form-group row" style="">
+        @*Temperature*@
+        <h3>Temperature</h3>
+        <label class="control-label col-sm-1" asp-for="LowestTemp">Lowest: ('C)</label>
+        <div class="col-sm-1">
+            <input id="txtLowTemp" asp-for="LowestTemp" class="form-control" readonly="readonly" value="@Model.LowestTemp"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+
+        <label class="control-label col-sm-1" asp-for="HighestTemp">Highest: ('C)</label>
+        <div class="col-sm-1">
+            <input id="txtHighTemp" asp-for="HighestTemp" class="form-control" readonly="readonly" value="@Model.HighestTemp"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+
+        <label class="control-label col-sm-1" asp-for="TempUnit" style="width:6%">Unit:</label>
+        <div class="col-sm-2">
+            <select class="form-control" asp-for="TempUnit" disabled style="font-family: Verdana;font-size: small;">
+                <option value="1">Celcius ('C)</option>
+                <option value="2">Kelvin (K)</option>
+                <option value="3">Fahrenheit ('F)</option>
+            </select>
+        </div>
+        <label class="col-sm-2 control-label" style="width:11%" asp-for="TempNoti">Notification:</label>
+        <div class="col-sm-1" style="width:10%">
+            <select disabled class="form-control" style="font-family: Verdana;font-size: small;" asp-for="TempNoti">
+                <option value="1">On</option>
+                <option value="0">Off</option>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            @*<a class="col-sm-1 control-label" id="tempEdit">Edit</a>*@
+            <button type="button" class="btn-info edit" data-toggle="modal" data-target="#editTemp">Edit</button>
+            <div class="col-sm-1 control-label">
+                <input id="tempSave" class="btn btn-primary" type="submit" value="Save">
+                <input id="tempReset" class="btn btn-primary" type="reset" value="Reset">
+            </div>
+        </div>
+    </div>
+
+    @*Humidity*@
+    <div class="form-group row">
+
+        <h3>Humidity</h3>
+        <label class="control-label col-sm-1" asp-for="LowestHumidity">Lowest: (%)</label>
+        <div class="col-sm-1">
+            <input id="txtLowHum" asp-for="LowestHumidity" class="form-control" readonly="readonly" value="@Model.LowestHumidity"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+
+        <label class="control-label col-sm-1" asp-for="LowestHumidity">Highest: (%)</label>
+        <div class="col-sm-1">
+            <input id="txtHighHum" asp-for="HighestHumidity" class="form-control" readonly="readonly" value="@Model.HighestHumidity"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+
+        <label class="control-label col-sm-1" style="width:6%" asp-for="HumUnit">Unit:</label>
+        <div class="col-sm-2">
+            <select disabled class="form-control" style="font-family: Verdana;font-size: small;" asp-for="HumUnit">
+                <option value="1">Percentage(%)</option>
+            </select>
+        </div>
+
+        <label class="col-sm-2 control-label" style="width:11%" asp-for="HumNoti">Notification:</label>
+        <div class="col-sm-1" style="width:10%">
+            <select disabled class="form-control" style="font-family: Verdana;font-size: small;" asp-for="HumNoti">
+                <option value="1">On</option>
+                <option value="0">Off</option>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            @*<a id="humEdit">Edit</a>*@
+            <button type="button" class="btn-info edit" data-toggle="modal" data-target="#editHum">Edit</button>
+            <input id="humSave" class="btn btn-primary" type="submit" value="Save">
+            <input id="humReset" class="btn btn-primary" type="reset" value="Reset">
+        </div>
+    </div>
+
+    @*Light*@
+    <div class="form-group row">
+        <h3>Light</h3>
+        <label class="control-label col-sm-1" asp-for="LowestLight">Lowest: (lx)</label>
+        <div class="col-sm-1">
+            <input id="txtLowLight" asp-for="LowestLight" class="form-control" readonly="readonly" value="@Model.LowestLight"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+        <label class="control-label col-sm-1" asp-for="LowestLight">Highest: (lx)</label>
+        <div class="col-sm-1">
+            <input id="txtHighLight" asp-for="HighestLight" class="form-control" readonly="readonly" value="@Model.HighestLight"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+
+        <label class="control-label col-sm-1" style="width:6%" asp-for="LightUnit">Unit:</label>
+        <div class="col-sm-2">
+            <select disabled class="form-control" style="font-family: Verdana;font-size: small;" asp-for="LightUnit">
+                <option value="1">lx</option>
+            </select>
+        </div>
+        <label class="col-sm-2 control-label" style="width:11%" asp-for="LightNoti">Notification:</label>
+        <div class="col-sm-1" style="width:10%">
+            <select disabled class="form-control" style="font-family: Verdana;font-size: small;" asp-for="LightNoti">
+                <option value="1">On</option>
+                <option value="0">Off</option>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            @*<a id="lightEdit">Edit</a>*@
+            <button type="button" class="btn-info edit" data-toggle="modal" data-target="#editLight">Edit</button>
+            <input id="lightSave" class="btn btn-primary" type="submit" value="Save">
+            <input id="lightReset" class="btn btn-primary" type="reset" value="Reset">
+        </div>
+    </div>
+
+    @*Weight*@
+    <div class="form-group row">
+        <h3>Force</h3>
+        <label class="control-label col-sm-1" asp-for="LowestWeight">Lowest: (N)</label>
+        <div class="col-sm-1">
+            <input id="txtLowWeight" asp-for="LowestWeight" class="form-control" readonly="readonly" value="@Model.LowestWeight"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+        <label class="control-label col-sm-1" asp-for="HighestWeight">Highest: (N)</label>
+        <div class="col-sm-1">
+            <input id="txtHighWeight" asp-for="HighestWeight" class="form-control" readonly="readonly" value="@Model.HighestWeight"
+                   style="font-family: Verdana;font-size: small;" />
+        </div>
+
+        <label class="control-label col-sm-1" style="width:6%" asp-for="WeightUnit">Unit:</label>
+        <div class="col-sm-2">
+            <select disabled class="form-control" style="font-family: Verdana;font-size: small;" asp-for="WeightUnit">
+                <option value="1">Newton (N)</option>
+                <option value="2">Gram (g)</option>
+                <option value="3">Kilogram (kg)</option>
+                <option value="4">Pound (lb)</option>
+            </select>
+        </div>
+
+        <label class="col-sm-2 control-label" style="width:11%" asp-for="WeightNoti">Notification:</label>
+        <div class="col-sm-1" style="width:10%">
+            <select disabled class="form-control" style="font-family: Verdana;font-size: small;" asp-for="WeightNoti">
+                <option value="1">On</option>
+                <option value="0">Off</option>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            @*<a id="weightEdit">Edit</a>*@
+            <button type="button" class="btn-info edit" data-toggle="modal" data-target="#editWeight">Edit</button>
+            <input id="weightSave" class="btn btn-primary" type="submit" value="Save">
+            <input id="weightReset" class="btn btn-primary" type="reset" value="Reset">
+        </div>
+    </div>
+</form>
+
+
+
+
+<form asp-controller="Preference" asp-action="Setting" method="post" role="form" class="form-horizontal">
+    @*Temperature*@
+    <div class="modal fade" id="editTemp" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Temperature</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="LowestTemp">Lowest: ('C)</label>
+                            <div class="col-sm-6">
+                                <input id="lowTemp" class="form-control" asp-for="LowestTemp" value="@Model.LowestTemp" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erlowTemp" asp-validation-for="LowestTemp" class="text-danger" value=""></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="HighestTemp">Highest: ('C)</label>
+                            <div class="col-sm-6">
+                                <input id="highTemp" class="form-control" asp-for="HighestTemp" value="@Model.HighestTemp" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erhighTemp" asp-validation-for="HighestTemp" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="TempUnit">Unit:</label>
+                            <div class="col-sm-6">
+                                <select id="drpTemp1" asp-for="TempUnit" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempUnit">
+                                    <option value="1">Celcius ('C)</option>
+                                    <option value="2">Kelvin (K)</option>
+                                    <option value="3">Fahrenheit ('F)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" asp-for="TempNoti">Notification:</label>
+                            <div class="col-sm-6">
+                                <select id="drpTemp" asp-for="TempNoti" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempNoti">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-6">
+                                <input disabled="disabled" id="saveTemp" type="submit" value="Save" class="btn-info save">
+                                <input onclick="reset()" type="reset" value="Reset" class="btn reset">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Humidity*@
+    <div class="modal fade" id="editHum" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Humidity</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="LowestHumidity">Lowest: (%)</label>
+                            <div class="col-sm-6">
+                                <input id="lowHum" class="form-control" asp-for="LowestHumidity" value="@Model.LowestHumidity" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erlowHum" asp-validation-for="LowestHumidity" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="HighestHumidity">Highest: (%)</label>
+                            <div class="col-sm-6">
+                                <input id="highHum" class="form-control" asp-for="HighestHumidity" value="@Model.HighestHumidity" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erhighHum" asp-validation-for="HighestHumidity" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="HumUnit">Unit:</label>
+                            <div class="col-sm-6">
+                                <select  asp-for="HumUnit" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempUnit">
+                                    <option value="1">Percentage (%)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" asp-for="HumNoti">Notification:</label>
+                            <div class="col-sm-6">
+                                <select id="drpHum" asp-for="HumNoti" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempNoti">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-6">
+                                <input disabled="disabled" id="saveHum" type="submit" value="Save" class="btn-info save">
+                                <input type="reset" value="Reset" class="btn reset">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Light*@
+    <div class="modal fade" id="editLight" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Light</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="LowestLight">Lowest: (lx)</label>
+                            <div class="col-sm-6">
+                                <input id="lowLight" class="form-control" asp-for="LowestLight" value="@Model.LowestLight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erlowLight" asp-validation-for="LowestLight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="HighestLight">Highest: (lx)</label>
+                            <div class="col-sm-6">
+                                <input id="highLight" class="form-control" asp-for="HighestLight" value="@Model.HighestLight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erhighLight" asp-validation-for="HighestLight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="LightUnit">Unit:</label>
+                            <div class="col-sm-6">
+                                <select  asp-for="LightUnit" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempUnit">
+                                    <option value="1">lx</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" asp-for="LightNoti">Notification:</label>
+                            <div class="col-sm-6">
+                                <select id="drpLight" asp-for="LightNoti" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempNoti">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-6">
+                                <input disabled="disabled"id="saveLight" type="submit" value="Save" class="btn-info save">
+                                <input type="reset" value="Reset" class="btn reset">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Weight*@
+    <div class="modal fade" id="editWeight" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Force</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="LowestWeight">Lowest: (N)</label>
+                            <div class="col-sm-6">
+                                <input id="lowWeight" class="form-control" asp-for="LowestWeight" value="@Model.LowestWeight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erlowWeight" asp-validation-for="LowestWeight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="HighestWeight">Highest: (N)</label>
+                            <div class="col-sm-6">
+                                <input id="highWeight" class="form-control" asp-for="HighestWeight" value="@Model.HighestWeight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span id="erhighWeight" asp-validation-for="HighestWeight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" asp-for="WeightUnit">Unit:</label>
+                            <div class="col-sm-6">
+                                <select id="drpWeight1" asp-for="WeightUnit" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempUnit">
+                                    <option value="1">Newton (N)</option>
+                                    <option value="2">Gram (g)</option>
+                                    <option value="3">Kilogram (kg)</option>
+                                    <option value="4">Pound (lb)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" asp-for="WeightNoti">Notification:</label>
+                            <div class="col-sm-6">
+                                <select id="drpWeight" asp-for="WeightNoti" class="form-control" style="font-family: Verdana;font-size: small;" value="@Model.TempNoti">
+                                    <option value="1">On</option>
+                                    <option value="0">Off</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-6">
+                                <input disabled="disabled" id="saveWeight" type="submit" value="Save" class="btn-info save">
+                                <input type="reset" value="Reset" class="btn reset">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

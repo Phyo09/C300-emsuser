@@ -1,0 +1,425 @@
+@model List<Topic>
+@{
+    ViewData["Title"] = "Forum";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var name = ViewData["threadlist"] as List<Thread>;
+}
+
+<script>
+
+  $(window).scroll(function(){
+    var width = $(window).width();
+    if(width < 800) {
+      $('#scroll').hide();
+    } else {
+      var e = $(window).scrollTop();
+      e>150?$('#scroll').fadeIn() :$('#scroll').fadeOut();
+    }
+  });
+
+</script>
+
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        width: 100%;
+    }
+
+    header {
+        margin: 0;
+        border-bottom: 3px solid hsl(195, 73%, 58%);
+    }
+
+    a {
+        display: inline-block;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .row.mt {
+        margin-top: 1.25em;
+        margin-top:5%;
+    }
+
+    .row.mb {
+        margin-bottom: 1.25em;
+    }
+
+    .pad {
+        padding: 15px;
+    }
+
+    .spad {
+        padding: 5px;
+    }
+
+    .lpad {
+        padding: 20px;
+    }
+
+    .ar {
+        text-align: right;
+    }
+
+    .logo {
+        color: #ffffff;
+        font-size: 18px;
+        text-transform: lowercase;
+    }
+
+        .logo span:first-child {
+            font-weight: 400;
+        }
+
+        .logo span:last-child {
+            color: #b3b3b3;
+            font-weight: 300;
+        }
+
+    nav.menu a {
+        margin: 0 7px;
+        color: #b3b3b3;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        nav.menu a:last-child {
+            margin: 7px 0 7px 7px;
+        }
+
+        nav.menu a.current {
+            color: #ffffff;
+        }
+
+    .top-msg {
+        border-bottom: 5px solid;
+        color: #666666;
+        font-size: 13px;
+        font-weight: 300;
+    }
+
+    /*.breadcrumb a {
+        transition: color .5s;
+    }
+
+        .breadcrumb a:hover {
+            color: #333333;
+        }
+
+        .breadcrumb a:after {
+            content: '\00a0\00a0\002F\00a0\00a0';
+            color: #b3b3b3;
+        }
+
+        .breadcrumb a:last-child:after {
+            content: '\00a0\00a0\002F\00a0\00a0 now you\0027re here';
+            color: #b3b3b3;
+        }*/
+
+    a.primary {
+        color: #b3b3b3;
+        transition: color .5s;
+    }
+
+        a.primary:hover {
+            color: #46bbe2;
+        }
+
+    a.underline {
+        color: #b3b3b3;
+    }
+
+        a.underline:hover:after {
+            content: '';
+            display: block;
+            width: inherit;
+            height: 2px;
+            background-color: #46bbe2;
+            margin-bottom: -2px;
+            animation: link .9s ease;
+        }
+
+    @@keyframes link {
+        from {
+            width: 0;
+        }
+
+        to {
+            width: 100%;
+        }
+    }
+    /* Topic */
+    .rounded {
+        overflow: hidden;
+    }
+
+        .rounded.top {
+            border-radius: 4px 4px 0 0;
+        }
+
+        .rounded.all {
+            border-radius: 6px;
+        }
+
+    .forum-category {
+        background-color: #6B8E23;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 20px;
+    }
+
+    .forum-head > .column {
+        background-color: #696969;
+        border-right: 1px;
+        border-left: 1px;
+        color: #ffffff;
+        font-weight: 300;
+        font-size: 18px;
+        text-align: center;
+    }
+
+        .forum-head > .column:first-child {
+            text-align: left;
+            border-left: none;
+        }
+
+        .forum-head > .column:last-child {
+            border-right: none;
+        }
+
+    .forum-topic > .column {
+        min-height: 71px;
+        max-height: 71px;
+        background-color: #f5f5f5;
+        border-bottom: 1px;
+        color: #808080;
+        font-size: 12px;
+    }
+
+        .forum-topic > .column:first-child {
+            color: #999999;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .forum-topic > .column:nth-child(n+3) {
+            text-align: center;
+        }
+
+        .forum-topic > .column:last-child {
+            text-align: left;
+        }
+
+    .forum-topic a {
+        transition: color .5s;
+        color: #1fa8d6;
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+        .forum-topic a:hover {
+            color: #21a7d4;
+        }
+
+    .forum-topic span {
+        display: block;
+        margin: 0 0 2px 0;
+    }
+
+    .overflow-control {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .forum-topic .column:nth-child(2) span.overflow-control {
+        width: 70%;
+        height: 15px;
+    }
+
+    .forum-topic span.center {
+        padding-top: 10px;
+    }
+
+    .normal {
+        background-color: #f5f5f5;
+        color: #808080;
+        font-size: 12px;
+    }
+
+        .normal h1.inset {
+            background-color: #16232d;
+            margin: -20px -20px 20px -20px;
+            color: #ffffff;
+            padding: 15px 20px 15px 20px;
+            font-size: 12px;
+            font-weight: 300;
+        }
+
+        .normal p {
+            margin: 0 0 40px 0;
+            line-height: 20px;
+        }
+
+            .normal p:last-child {
+                margin: 0;
+            }
+
+    #scroll {
+        display: none;
+        width: 27px;
+        background-color: #16232d;
+        position: fixed;
+        right: 60px;
+        bottom: 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        padding: 5px;
+        text-align: center;
+        color: #ffffff;
+    }
+
+
+
+        #scroll.show {
+            display: block;
+        }
+
+    @@media only screen and (max-width: 800px) {
+
+        .logo,
+        nav {
+            text-align: center;
+        }
+
+            nav.menu a {
+                margin: 7px;
+            }
+
+
+
+        .forum-head > .column {
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+        }
+
+
+        .rounded,
+        .rounded.top,
+        .rounded.all {
+            border-radius: 0;
+        }
+
+        .overflow-control > a,
+        .overflow-control {
+            display: block;
+            width: 290px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+</style>
+<div>@TempData["Msg"]</div>
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+<form>
+    <a href="#top" id="scroll">
+        <i class="icon-angle-up"></i>
+    </a>
+    <p>
+        <a asp-action="Create" id="thread" style="background-color:lightgreen;margin-left:80%" asp-controller="Forum" class="btn btn-default pull-left"><i class="fa fa-edit"></i> Create Topic</a>
+    </p>
+    <br />
+    <br />
+    <div class="row mt">
+        <div class="large-12">
+            <div class="large-12 forum-category rounded top">
+                <div class="large-8 small-10 column lpad">
+                    Environment Monitoring Forum
+                </div>
+                <div class="large-4 small-2 column lpad ar ">
+
+                </div>
+            </div>
+
+            <div class="toggleview">
+                <div class="large-12 forum-head">
+                    <div class="large-8 small-8 column lpad">
+                        Topics
+                    </div>
+                    <div class="large-1 column lpad">
+                        &nbsp;
+                    </div>
+                    <div class="large-1 column lpad">
+                        Threads
+                    </div>
+                    <div class="large-2 small-4 column lpad">
+                        Last Action
+                    </div>
+                </div>
+
+
+                @for (int i = 0; i < Model.Count; i++)
+            {
+                    <div class="large-12 forum-topic">
+                        <div class="large-1 column lpad">
+                            <span class="fa fa-star"></span>
+                        </div>
+                        <div class="large-7 small-8 column lpad">
+                            <span class="overflow-control">
+                                <a asp-action="Index" asp-controller="Thread" asp-route-id="@Model[i].TopicId">@Model[i].TopicName       </a>
+
+                            </span>
+                            <span class="overflow-control">
+                                @Model[i].Description
+                            </span>
+                        </div>
+                        <div class="large-1 column lpad">
+                            <span class="center"></span>
+                        </div>
+                        <div class="large-1 column lpad">
+                            <span class="center">@Model[i].ThreadCount</span>
+                        </div>
+                        <div class="large-2 small-4 column pad">
+                            @if (name[i] != null)
+                            {
+                                <span>
+                                    <a href="#">@name[i].ThreadName</a>
+                                    <a asp-action="Delete" asp-controller="Forum" style="color:red;float:right;height:10px" asp-route-id="@Model[i].TopicId">&Chi;</a>
+
+                                </span>
+                                <span>@name[i].CreatedDate</span>
+
+                                <span>by <a href="#">@name[i].UserId</a></span>
+                            }
+                            else
+                            {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <span>
+                                    <a asp-action="Delete" asp-controller="Forum" style="color:red;float:right;height:10px" asp-route-id="@Model[i].TopicId">&Chi;</a>
+                                </span>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+    <div class="row mt mb" style="height:50px">
+        <div class="large-12">
+            <div class="large-12 small-12 forum-category rounded top lpad">
+                <span></span>
+            </div>
+
+        </div>
+    </div>
+
+
+</form>

@@ -1,0 +1,26 @@
+## Ignore build output
+bin/
+obj/
+
+## Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Ignore Rider/VSCode/Visual Studio settings
+.vscode/
+.idea/
+*.log
+*.dbmdl
+
+## Ignore database local settings
+*.mdf
+*.ldf
+
+## ASP.NET specific
+*.publish.xml
+*.Publish.xml
+
+appsettings.json
+

@@ -1,0 +1,379 @@
+@{ 
+    var unit = ViewData["unit"];
+}
+@section ScriptSection {
+
+    <script language="javascript">
+
+        $(document).ready(function () {
+
+            var interval = $("#ddlinterval").val();
+            var device = "temp";
+            var status = "on";
+
+            $('#btnResume').hide();
+
+            var mychart = new Chart(document.getElementById("chart"), {
+                type: 'line',
+                data: {
+                    labels: ['', '', '', '', '', '', '', '', '', ''],
+                    datasets: [{
+                        label: 'Temperature',
+                        backgroundColor: "red",
+                        borderColor: "red",
+                        fill: false,
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Progressive Line Graph of Temperature'
+                    }
+                }
+            });
+
+            $.ajaxSetup({ cache: false });
+            timer = setInterval(AjaxAddDataTemp, interval);
+
+            function AjaxLoadInterval() {
+                clearInterval(timer)
+                interval = $("#ddlinterval").val();
+                if (status == "on") {
+                    if (device == "temp") {
+                        timer = setInterval(AjaxAddDataTemp, interval);
+                    }
+                    else if (device == "hum") {
+                        timer = setInterval(AjaxAddDataHum, interval);
+                    }
+                    else if (device == "light") {
+                        timer = setInterval(AjaxAddDataLight, interval);
+                    }
+                    else if (device == "weight") {
+                        timer = setInterval(AjaxAddDataWeight, interval);
+                    }
+
+                }
+                //else if (status == "off") {
+                //    interval = $("#ddlinterval").val();
+                //}
+
+                //mychart.update();
+                //console.log(interval)
+            }
+            $("#ddlinterval").change(AjaxLoadInterval);
+
+            $('#btnStop').click(function () {
+                clearInterval(timer)
+                $("#divCur").html("0.00");
+                status = "off";
+                $('#btnResume').show();
+                $('#btnStop').hide();
+            });
+            $('#btnResume').click(function () {
+                //clearInterval(timer)
+                if (device == "temp") {
+                    AjaxAddDataTemp();
+                    timer = setInterval(AjaxAddDataTemp, interval);
+                }
+                else if (device == "hum") {
+                    AjaxAddDataHum();
+                    timer = setInterval(AjaxAddDataHum, interval);
+                }
+                else if (device == "light") {
+                    AjaxAddDataLight();
+                    timer = setInterval(AjaxAddDataLight, interval);
+                }
+                else if (device == "weight") {
+                    AjaxAddDataWeight();
+                    timer = setInterval(AjaxAddDataWeight, interval);
+                }
+                status = "on";
+                $('#btnResume').hide();
+                $('#btnStop').show();
+            });
+
+            $('#btnRefresh').click(function () {
+                $('#btnResume').hide();
+                $('#btnStop').show();
+                clearInterval(timer)
+                mychart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                mychart.data.labels = ['', '', '', '', '', '', '', '', '', '']
+                AjaxAddDataTemp();
+                if (device == "temp") {
+                    AjaxAddDataTemp
+                    timer = setInterval(AjaxAddDataTemp, interval);
+                }
+                else if (device == "hum") {
+                    AjaxAddDataHum
+                    timer = setInterval(AjaxAddDataHum, interval);
+                }
+                else if (device == "light") {
+                    AjaxAddDataLight
+                    timer = setInterval(AjaxAddDataLight, interval);
+                }
+                else if (device == "weight") {
+                    AjaxAddDataWeight
+                    timer = setInterval(AjaxAddDataWeight, interval);
+                }
+
+                console.log(interval)
+            });
+
+            $('#btnTemp').click(function () {
+                clearInterval(timer)
+                //mychart.clear()
+                //mychart.update();
+                mychart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                mychart.data.labels = ['', '', '', '', '', '', '', '', '', '']
+                device = "temp";
+                mychart.data.datasets[0].label = "Temperature"
+                mychart.data.datasets[0].backgroundColor = "red"
+                mychart.data.datasets[0].borderColor = "red"
+                mychart.options.title.text = "Progressive Line Graph of Temperature"
+                timer = setInterval(AjaxAddDataTemp, interval);
+                //mychart.update();
+                console.log(interval)
+            });
+            $('#btnHum').click(function () {
+                clearInterval(timer)
+                //mychart.clear()
+                //mychart.update();
+                mychart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                mychart.data.labels = ['', '', '', '', '', '', '', '', '', '']
+                device = "hum";
+                mychart.data.datasets[0].label = "Humidity"
+                mychart.data.datasets[0].backgroundColor = "#0375D8"
+                mychart.data.datasets[0].borderColor = "#0375D8"
+                mychart.options.title.text = "Progressive Line Graph of Humidity"
+                timer = setInterval(AjaxAddDataHum, interval);
+                //mychart.update();
+                console.log(interval)
+            });
+            $('#btnLight').click(function () {
+                clearInterval(timer)
+                //mychart.clear()
+                //mychart.update();
+                mychart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                mychart.data.labels = ['', '', '', '', '', '', '', '', '', '']
+                device = "light";
+                mychart.data.datasets[0].label = "Light"
+                mychart.data.datasets[0].backgroundColor = "#FFC000"
+                mychart.data.datasets[0].borderColor = "#FFC000"
+                mychart.options.title.text = "Progressive Line Graph of Light"
+                timer = setInterval(AjaxAddDataLight, interval);
+                // mychart.update();
+            });
+            $('#btnWeight').click(function () {
+                clearInterval(timer)
+                //mychart.clear()
+                //mychart.update();
+                mychart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                mychart.data.labels = ['', '', '', '', '', '', '', '', '', '']
+                device = "weight";
+                mychart.data.datasets[0].label = "Force"
+                mychart.data.datasets[0].backgroundColor = "green"
+                mychart.data.datasets[0].borderColor = "green"
+                mychart.options.title.text = "Progressive Line Graph of Force"
+                timer = setInterval(AjaxAddDataWeight, interval);
+                //mychart.update();
+            });
+
+
+            
+            function AjaxAddDataTemp() {
+                $.getJSON(
+                    "/Progressive/GetDataTemp",
+                    function (data) {
+                        mychart.data.datasets[0].data.push(data);
+                        mychart.data.datasets[0].data.splice(0, 1);
+                        //console.log(data);
+                        mychart.update();
+                        $("#divCur").html(data);
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataTempTime",
+                    function (test) {
+                        mychart.data.labels.push(test);
+                        mychart.data.labels.splice(0, 1);
+                        mychart.update();
+                    }
+                );
+            }
+
+            function AjaxAddDataHum() {
+                $.getJSON(
+                    "/Progressive/GetDataHum",
+                    function (data) {
+                        mychart.data.datasets[0].data.push(data);
+                        mychart.data.datasets[0].data.splice(0, 1);
+                        //console.log(data);
+                        mychart.update();
+                        $("#divCur").html(data);
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataHumTime",
+                    function (test) {
+                        mychart.data.labels.push(test);
+                        mychart.data.labels.splice(0, 1);
+                        mychart.update();
+                    }
+                );
+            }
+
+            function AjaxAddDataLight() {
+                $.getJSON(
+                    "/Progressive/GetDataLight",
+                    function (data) {
+                        mychart.data.datasets[0].data.push(data);
+                        mychart.data.datasets[0].data.splice(0, 1);
+                        //console.log(data);
+                        mychart.update();
+                        $("#divCur").html(data);
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataLightTime",
+                    function (test) {
+                        mychart.data.labels.push(test);
+                        mychart.data.labels.splice(0, 1);
+                        mychart.update();
+                    }
+                );
+            }
+
+            function AjaxAddDataWeight() {
+                $.getJSON(
+                    "/Progressive/GetDataWeight",
+                    function (data) {
+                        mychart.data.datasets[0].data.push(data);
+                        mychart.data.datasets[0].data.splice(0, 1);
+                        //console.log(data);
+                        mychart.update();
+                        $("#divCur").html(data);
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataWeightTime",
+                    function (test) {
+                        mychart.data.labels.push(test);
+                        mychart.data.labels.splice(0, 1);
+                        mychart.update();
+                    }
+                );
+            }
+
+
+
+
+
+        });
+
+    </script>
+
+}
+<style>
+    /*Temperature,Humidity, Light,Weight*/
+    .btn {
+        /*color: #111;*/
+        /*background-color: #00C851;*/ /*active--> green*/
+        color: #6b6d6d;
+        background-color: #d6d4d4;
+        width: 110%;
+        font-family: Verdana;
+        font-size: small;
+        font-size-adjust: initial;
+        border-radius: 15px;
+    }
+
+        .btn:hover {
+            background-color: #00C851;
+            color: white;
+        }
+
+    /*stop,refresh,resume*/
+    .btn-sm {
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: #0889B2;
+        color: white;
+        font-size: small;
+        width: 45%;
+        text-align: center;
+    }
+
+    p {
+        font-family: Verdana;
+        font-size: small;
+        line-height: 140%;
+    }
+</style>
+<div class="col-sm-offset-2">
+    <div class="col-sm-2">
+        <button id="btnTemp" class="btn" @*style="background-color:deepskyblue;color:#111;width:100%" *@>Temperature</button>
+    </div>
+    <div class="col-sm-2">
+        <button id="btnHum" class="btn" @*style="background-color:deepskyblue;color:#111;width:100%" *@>Humidity</button>
+    </div>
+    <div class="col-sm-2">
+        <button id="btnLight" class="btn" @*style="background-color:deepskyblue;color:#111;width:100%" *@>Light</button>
+    </div>
+    <div class="col-sm-2">
+        <button id="btnWeight" class="btn" @*style="background-color:deepskyblue;color:#111;width:100%" *@>Weight</button>
+    </div>
+</div>
+<div class="container">
+    <div class="col-sm-offset-1 col-sm-8" style="width:60%;height:20%;margin-top:3%;margin-left:13%">
+        <canvas id="chart" style="" width="75" height="50"></canvas>
+    </div>
+
+    <div class="col-sm-3">
+        <div>
+            <label>Interval: </label>
+            <div>
+                <select id="ddlinterval">
+                    <option value="2000">2 sec</option>
+                    <option value="5000">5 sec</option>
+                    <option value="15000">15 sec</option>
+                    <option value="30000">30 sec</option>
+                    <option value="60000">1 min</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <button class="btn-sm" id="btnStop"><i class="fa fa-stop"></i> Stop</button>
+            <button class="btn-sm" id="btnResume"><i class="fa fa-play"></i> Resume</button>
+            <button class="btn-sm" id="btnRefresh"><i class="fa fa-refresh"></i> Refresh</button>
+        </div>
+
+        <div style="background-color:#DEF0D8;color:green">
+            <div class="col-sm-2">
+                <i class="fa fa-clock-o" style="font-size:40px"></i>
+            </div>
+            <div class="col-sm-10">
+                <p id="divCur" class="col-sm-12" style="font-size:21px">0.00 </p>
+            </div>
+            <p style="text-align:right">Right Now </p>
+        </div>
+
+        @*<div style="background-color:#F2DEE0;color:red;padding:initial">
+            <i class="fa fa-arrow-up col-sm-6" style="font-size:60px"></i>
+            <p id="divCur" class="col-sm-6" style="font-size:30px">0.00</p>
+            <p style="text-align:right">Recent High <br />fgsdg</p>
+        </div>
+        <div style="background-color:#D9EDF6;color:blue;padding:initial">
+            <i class="fa fa-arrow-down col-sm-6" style="font-size:60px"></i>
+            <p id="divCur" class="col-sm-6" style="font-size:30px">0.00</p>
+            <p style="text-align:right">Recent Low <br />dgg</p>
+        </div>*@
+
+
+    </div>
+</div>
+
+
+

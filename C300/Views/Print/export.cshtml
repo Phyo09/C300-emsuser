@@ -1,0 +1,131 @@
+
+@{
+    ViewData["Title"] = "export";
+    //var format = "XLSX";
+    //var id = 1;
+
+}
+
+@section ScriptSection {
+    <script>
+        $(document).ready(function () {
+            var format = "XLSX"
+            var id = 1
+            //data type
+            $("#1").click(function () {
+                id = 1;
+            });
+            $("#2").click(function () {
+                id = 2;
+            });
+            $("#3").click(function () {
+                id = 3;
+            });
+            $("#4").click(function () {
+                id = 4;
+            });
+            $("#5").click(function () {
+                id = 5;
+            });
+            $("#6").click(function () {
+                id = 6;
+            });
+
+            $("#XLSX").click(function () {
+                format = "XLSX";
+            });
+            $("#XLS").click(function () {
+                format = "XLS";
+            }); $("#ODS").click(function () {
+                format = "ODS";
+            }); $("#CSV").click(function () {
+                format = "CSV";
+            }); $("#PDF").click(function () {
+                format = "PDF";
+            });
+            $("#btnExport").click(function () {
+                console.log(id)
+                console.log(format)
+                $(this).attr("href", "/Print/Test/" + format + "/" + id);
+                //$("#exportType").fadeOut('slow');
+                $("#exportType").modal("hide")
+            });
+
+        });
+    </script>
+    }
+
+<h2>export</h2>
+<h4 class="col-sm-offset-1">Select what you want to download:</h4>
+<div class="col-sm-offset-2 col-sm-10" >
+    <div class="form-check">
+        <input id="1" name="dataType" type="radio" class="form-check-input" checked="checked" value="1" />
+        <label for="1" class="form-check-label">Temperature</label>
+    </div>
+    <div class="form-check">
+        <input id="2" name="dataType" type="radio" class="form-check-input" value="2" />
+        <label for="2" class="form-check-label">Humidity</label>
+    </div>
+    <div class="form-check">
+        <input id="3" name="dataType" type="radio" class="form-check-input" value="3" />
+        <label for="3" class="form-check-label">Light</label>
+    </div>
+    <div class="form-check">
+        <input id="4" name="dataType" type="radio" class="form-check-input" value="4" />
+        <label for="4" class="form-check-label">Weight</label>
+    </div>
+    <div class="form-check">
+        <input id="5" name="dataType" type="radio" class="form-check-input" value="5" />
+        <label for="5" class="form-check-label">Account</label>
+    </div>
+    <div class="form-check">
+        <input id="6" name="dataType" type="radio" class="form-check-input" value="6" />
+        <label for="6" class="form-check-label">Backlog</label>
+    </div>
+</div>
+
+<button type="button" class="btn-info edit col-sm-offset-3" data-toggle="modal" data-target="#exportType">Export</button>
+
+<div class="modal fade" id="exportType" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="text-primary">Export</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                    <h4>Output format:</h4>
+                    <div class="form-check">
+                        <input id="XLSX" name="SelectedFormat" type="radio" class="form-check-input" checked value="XLSX" />
+                        <label for="XLSX" class="form-check-label">XLSX</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="XLS" name="SelectedFormat" type="radio" class="form-check-input" value="XLS" />
+                        <label for="XLS" class="form-check-label">XLS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="ODS" name="SelectedFormat" type="radio" class="form-check-input" value="ODS" />
+                        <label for="ODS" class="form-check-label">ODS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="CSV" name="SelectedFormat" type="radio" class="form-check-input" value="CSV" />
+                        <label for="CSV" class="form-check-label">CSV</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="PDF" name="SelectedFormat" type="radio" class="form-check-input" value="PDF" />
+                        <label for="PDF" class="form-check-label">PDF</label>
+                    </div>
+
+                    @*</form>*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="btnExport" type="button"  class="btn btn-primary">Print</a>
+                <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+

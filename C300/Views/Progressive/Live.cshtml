@@ -1,0 +1,429 @@
+@{ 
+    var id = Convert.ToInt32(ViewData["id"]);
+    var unit = ViewData["unit"];
+}
+@section ScriptSection {
+
+    <script language="javascript">
+
+        $(document).ready(function () {
+            var format = "XLSX"
+            $("#XLSX").click(function () {
+                format = "XLSX";
+            });
+            $("#XLS").click(function () {
+                format = "XLS";
+            }); $("#ODS").click(function () {
+                format = "ODS";
+            }); $("#CSV").click(function () {
+                format = "CSV";
+            }); $("#PDF").click(function () {
+                format = "PDF";
+            });
+            $("#btnExport").click(function () {
+                $(this).attr("href", "/Print/Test/" + format + "/" + @id);
+                //$("#exportType").fadeOut('slow');
+                $("#exportType").modal("hide")
+            });
+
+                var interval = $("#ddlinterval").val();
+                var device = "temp";
+                var status = "on";
+
+                $('#btnResume').hide();
+                var mychart = new Chart(document.getElementById("chart"), {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', '', '', '', '', '', ''],
+                        datasets: [{
+                            label: '@ViewData["type"]',
+                                backgroundColor: '@ViewData["color"]',
+                                borderColor: '@ViewData["color"]',
+                                fill: false,
+                                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                            }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            title: {
+                                display: true,
+                                text: '@ViewData["Title"]'
+                            }
+                        }
+                    });
+
+
+                $.ajaxSetup({ cache: false });
+                if (@id == 1) {
+                            timer1 = setInterval(AjaxAddDataTemp, interval);
+                        }
+                        else if (@id == 2) {
+                            timer1 = setInterval(AjaxAddDataHum, interval);
+                        }
+                        else if (@id == 3) {
+                            timer1 = setInterval(AjaxAddDataLight, interval);
+                        }
+                        else if (@id == 4) {
+                            timer1 = setInterval(AjaxAddDataWeight, interval);
+                        }
+
+                function AjaxLoadInterval() {
+                    clearInterval(timer1)
+                    interval = $("#ddlinterval").val();
+                    if (status == "on") {
+                        if (@id == 1) {
+                            timer1 = setInterval(AjaxAddDataTemp, interval);
+                        }
+                        else if (@id == 2) {
+                            timer1 = setInterval(AjaxAddDataHum, interval);
+                        }
+                        else if (@id == 3) {
+                            timer1 = setInterval(AjaxAddDataLight, interval);
+                        }
+                        else if (@id == 4) {
+                            timer1 = setInterval(AjaxAddDataWeight, interval);
+                        }
+
+                    }
+
+                }
+
+                $("#ddlinterval").change(AjaxLoadInterval);
+
+                $('#btnStop').click(function () {
+                    clearInterval(timer1);
+                    $("#divCur").html("0.00 "+'@unit');
+                    status = "off";
+                    $('#btnResume').show();
+                    $('#btnStop').hide();
+                });
+                $('#btnResume').click(function () {
+                    //clearInterval(timer1)
+                    if (@id == 1) {
+                        AjaxAddDataTemp();
+                        timer1 = setInterval(AjaxAddDataTemp, interval);
+                    }
+                    else if (@id == 2) {
+                        AjaxAddDataHum
+                        timer1 = setInterval(AjaxAddDataHum, interval);
+                    }
+                    else if (@id == 3) {
+                        AjaxAddDataLight
+                        timer1 = setInterval(AjaxAddDataLight, interval);
+                    }
+                    else if (@id == 4) {
+                        AjaxAddDataWeight
+                        timer1 = setInterval(AjaxAddDataWeight, interval);
+                    }
+                    status = "on";
+                    $('#btnResume').hide();
+                    $('#btnStop').show();
+                });
+
+                $('#btnRefresh').click(function () {
+                    $('#btnResume').hide();
+                    $('#btnStop').show();
+                    clearInterval(timer1);
+                    mychart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    mychart.data.labels = ['', '', '', '', '', '', '', '', '', '']
+                    //AjaxAddDataTemp();
+                    if (@id == 1) {
+                        AjaxAddDataTemp();
+                        timer1 = setInterval(AjaxAddDataTemp, interval);
+                    }
+                    else if (@id == 2) {
+                        AjaxAddDataHum
+                        timer1 = setInterval(AjaxAddDataHum, interval);
+                    }
+                    else if (@id == 3) {
+                        AjaxAddDataLight
+                        timer1 = setInterval(AjaxAddDataLight, interval);
+                    }
+                    else if (@id == 4) {
+                        AjaxAddDataWeight
+                        timer1 = setInterval(AjaxAddDataWeight, interval);
+                    }
+
+                    console.log(interval)
+                });
+
+
+
+
+                function AjaxAddDataTemp() {
+                    @*$.getJSON(
+                        "/Progressive/GetUnit/1",
+                        function (unit) {
+                            @unit  = unit;
+                        }
+                    );*@
+                    $.getJSON(
+                        "/Progressive/GetDataTemp",
+                        function (data) {
+                            mychart.data.datasets[0].data.push(data);
+                            //console.log(data);
+                            mychart.update();
+                            $("#divCur").html(data+' @unit');
+                        }
+                    );
+                    $.getJSON(
+                        "/Progressive/GetDataTempTime",
+                        function (test) {
+                            mychart.data.labels.push(test);
+                            mychart.update();
+                        }
+                    );
+
+                }
+
+                function AjaxAddDataHum() {
+                    $.getJSON(
+                        "/Progressive/GetDataHum",
+                        function (data) {
+                            mychart.data.datasets[0].data.push(data);
+                            //console.log(data);
+                            mychart.update();
+                            $("#divCur").html(data+' @unit');
+                        }
+                    );
+                    $.getJSON(
+                        "/Progressive/GetDataHumTime",
+                        function (test) {
+                            mychart.data.labels.push(test);
+                            mychart.update();
+                        }
+                    );
+
+                }
+
+                function AjaxAddDataLight() {
+                    $.getJSON(
+                        "/Progressive/GetDataLight",
+                        function (data) {
+                            mychart.data.datasets[0].data.push(data);
+                            //console.log(data);
+                            mychart.update();
+                            $("#divCur").html(data+' @unit');
+                        }
+                    );
+                    $.getJSON(
+                        "/Progressive/GetDataLightTime",
+                        function (test) {
+                            mychart.data.labels.push(test);
+                            mychart.update();
+                        }
+                    );
+
+                }
+
+                function AjaxAddDataWeight() {
+                    //var unit = "";
+                    //$.getJSON(
+                    //    "/Progressive/GetUnit/4",
+                    //    function (unita) {
+                    //        unit  = unita;
+                    //    }
+                    //);
+                    $.getJSON(
+                        "/Progressive/GetDataWeight",
+                        function (data) {
+                            mychart.data.datasets[0].data.push(data);
+                            //console.log(data);
+                            mychart.update();
+                            $("#divCur").html(data+' @unit');
+                        }
+                    );
+                    $.getJSON(
+                        "/Progressive/GetDataWeightTime",
+                        function (test) {
+                            mychart.data.labels.push(test);
+                            mychart.update();
+                        }
+                    );
+
+                }
+
+
+
+        });
+
+    </script>
+
+}
+<style>
+    /*.btn-default {
+        background-color: deepskyblue;
+        color: #111;
+        width: 100%
+    }*/
+    .btn {
+        /*color: #111;*/
+        /*background-color: #00C851;*/ /*active--> green*/
+        color: #6b6d6d;
+        background-color: #d6d4d4;
+        width: 110%;
+        font-family: Verdana;
+        font-size: small;
+        font-size-adjust: initial;
+        border-radius: 15px;
+    }
+    /*stop,refresh,resume*/
+    .btn-sm {
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: #0889B2;
+        color: white;
+        font-size: small;
+        width: 45%;
+    }
+    p {
+        font-family: Verdana;
+        font-size: small;
+        line-height: 140%;
+    }
+    .cancel {
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: white;
+        color: #00C851;
+        border-color: #00C851;
+        font-size: small;
+    }
+
+    .print {
+        background-color: #00C851;
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        color: white;
+        font-size: small;
+    }
+
+    .text-primary {
+        color: #00C851;
+    }
+
+    .btn-info {
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: #0889B2;
+        color: white;
+        font-size: small;
+    }
+       
+</style>
+@*dynamic,table, vertical,horizontal,line*@
+   <div class="col-sm-11" id="myDIV">
+    <div class="col-sm-2">
+        <a class="btn" asp-action="Live" asp-controller="Progressive" asp-route-id="@id">Dynamic</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn" asp-action="Table" asp-controller="PastHistory" asp-route-id="@id">Table</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="1">Vertical Bar</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="2">Horizontal Bar</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="3">Line</a>
+    </div>
+    <div class="col-sm-2">
+        <button style="border-radius:15px;padding:18px 18px;margin-left:10%" type="button" class="btn-info edit col-sm-offset-3" data-toggle="modal" data-target="#exportType">Export</button>
+    </div>
+</div>
+<br />
+<div class="container">
+    <div class="col-sm-offset-1 col-sm-8" style="width:60%;height:20%;margin-top:2%;margin-left:7%">
+        <canvas id="chart" style="" width="75" height="50"></canvas>
+    </div>
+
+    <div class="col-sm-3">
+        <div style="margin-top:25%">
+            <label>Interval: </label>
+            <div>
+                <select id="ddlinterval">
+                    <option value="2000">2 sec</option>
+                    <option value="5000">5 sec</option>
+                    <option value="15000">15 sec</option>
+                    <option value="30000">30 sec</option>
+                    <option value="60000">1 min</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <button class="btn-sm" id="btnStop"><i class="fa fa-stop"></i> Stop</button>
+            <button class="btn-sm" id="btnResume"><i class="fa fa-play"></i> Resume</button>
+            <button class="btn-sm" id="btnRefresh"><i class="fa fa-refresh"></i> Refresh</button>
+        </div>
+
+        <div style="background-color:#DEF0D8;color:green">
+            <div class="col-sm-2">
+                <i class="fa fa-clock-o" style="font-size:40px"></i>
+            </div>
+            <div class="col-sm-10">
+                <p id="divCur" class="col-sm-12" style="font-size:21px">0.00 @unit</p>
+            </div>
+            <p style="text-align:right">Right Now </p>
+        </div>
+
+        @*<div style="background-color:#F2DEE0;color:red;padding:initial">
+            <i class="fa fa-arrow-up col-sm-6" style="font-size:60px"></i>
+            <p id="divCur" class="col-sm-6" style="font-size:30px">0.00</p>
+            <p style="text-align:right">Recent High <br />fgsdg</p>
+        </div>
+        <div style="background-color:#D9EDF6;color:blue;padding:initial">
+            <i class="fa fa-arrow-down col-sm-6" style="font-size:60px"></i>
+            <p id="divCur" class="col-sm-6" style="font-size:30px">0.00</p>
+            <p style="text-align:right">Recent Low <br />dgg</p>
+        </div>*@
+    </div>
+</div>
+
+<div class="modal fade" id="exportType" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="text-primary">Export</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                    <h4>Output format:</h4>
+                    <div class="form-check">
+                        <input id="XLSX" name="SelectedFormat" type="radio" class="form-check-input" checked value="XLSX" />
+                        <label for="XLSX" class="form-check-label">XLSX</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="XLS" name="SelectedFormat" type="radio" class="form-check-input" value="XLS" />
+                        <label for="XLS" class="form-check-label">XLS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="ODS" name="SelectedFormat" type="radio" class="form-check-input" value="ODS" />
+                        <label for="ODS" class="form-check-label">ODS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="CSV" name="SelectedFormat" type="radio" class="form-check-input" value="CSV" />
+                        <label for="CSV" class="form-check-label">CSV</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="PDF" name="SelectedFormat" type="radio" class="form-check-input" value="PDF" />
+                        <label for="PDF" class="form-check-label">PDF</label>
+                    </div>
+
+                    @*</form>*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="btnExport" type="button" class="btn-primary print">Print</a>
+                <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

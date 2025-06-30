@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Environment Monitoring System @ViewData["Title"]</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="~/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/lib/scripts/Chart.min.js"></script> @*<-- Phyo*@
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />   
+    <script src="~/lib/jquery-validation/src/core.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.css" rel="stylesheet" />
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <style>
+                body {
+                    font-family: "Karla", Serif;
+                    background-color: #FFFFF0;
+                }
+
+                .navbar {
+                    background-color: #6AA84F;
+                    height: 35%;
+                    overflow: hidden;
+                }
+
+                    .navbar a {
+                        float: left;
+                        display: block;
+                        color: #fff;
+                        text-align: right;
+                        padding: 15px 17px;
+                        font-size: 20px;
+                    }
+
+                #login, #singup {
+                    color: white;
+                    float: right;
+                    background-color: #00C851
+                }
+
+                .navbar ul {
+                    margin: 8px;
+                    list-style: none;
+                }
+                .navbar a:hover {
+                    background-color: #ddd;
+                    color: #000;
+                }
+
+                .side-nav {
+                    height: 100%;
+                    width: 0;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    z-index: 1;
+                    background-color: #111;
+                    overflow-x: hidden;
+                    padding-top: 50px;
+                    opacity: 1;
+                    transition: 0.3s;
+                }
+
+
+
+                    .side-nav a {
+                        padding: 10px 10px 10px 30px;
+                        text-decoration: none;
+                        display: block;
+                        font-size: 20px;
+                        color: #ccc;
+                        transition: 0.5s;
+                    }
+
+
+                    .side-nav .btn-close {
+                        position: absolute;
+                        top: 0;
+                        right: 20px;
+                        font-size: 36px;
+                        margin-left: 50px;
+                    }
+
+                #main {
+                    transition: margin-left 0.4s;
+                    padding: 20px;
+                    overflow: hidden;
+                    width: 100%;
+                }
+    </style>
+    <script type="text/javascript">
+        function openMenu() {
+            document.getElementById("menu").style.width = "200px";
+            document.getElementById("main").style.marginLeft = "200px";
+
+
+        }
+        function closeMenu() {
+            document.getElementById("menu").style.width = "0px";
+            document.getElementById("main").style.marginLeft = "0px";
+
+
+        }
+    </script>
+
+
+    @RenderSection("ScriptSection", false)
+</head>
+<body>
+    <nav class="navbar">
+        <span class="open-slide">
+            <a href="#" onclick="openMenu()">
+
+                <svg width="40" height="40">
+                    <path d="M0,6 40,6" stroke="#111" stroke-width="6" />
+                    <path d="M0,13 40,13" stroke="#111" stroke-width="6" />
+                    <path d="M0,20 40,20" stroke="#111" stroke-width="6" />
+                </svg>
+            </a>
+        </span>
+        <div class="col-sm-3">
+            <img class="col-sm-1" src="~/images/EMS-Logo.png" style="width:35%;height:35%;" />
+
+            <div class="col-sm-2"><b style="font-style:oblique;margin-top:15px;font-size:13px">Environement Monitoring System</b></div>
+        </div>
+        <ul class="navbar-nav">
+            <li>
+                <a asp-action="Index" asp-controller="Home">HOME</a>
+            </li>
+                <a asp-action="Dynamic" asp-controller="Progressive">LIVE DATA</a>
+            </li>
+            <li>
+                <a asp-action="FAQ" asp-controller="Home">HELP & FAQ</a>
+            </li>
+            <li>
+                <a asp-action="AboutUs" asp-controller="Home">ABOUT US</a>
+            </li>
+            <li>
+                <a asp-action="ContactUs" asp-controller="Home">CONTACT US</a>
+            </li>
+            <li><a asp-action="Index" asp-controller="Forum">Forum</a></li>
+            <li><a asp-action="Status" asp-controller="Emsuser">Status</a></li>
+            <li style="padding-right:30px;">
+                @*; color:lightseagreen*@
+                @*#00C851*@
+                <a class="btn btn-default btn-xs pull-right" id="login" role="button" asp-action="Login" asp-controller="Account">LOGIN</a>
+            </li>
+            <li style="padding-right:10px;">
+                <a class="btn btn-default btn-xs pull-right" id="singup" role="button" style="background-color:deepskyblue">SIGN UP</a>
+            </li>
+        </ul>
+    </nav>
+    <div id="menu" class="side-nav">
+        <a href="#" class="btn-close" onclick="closeMenu()">&times;</a>
+
+        <a href="Hoome/Index"><span class="fa fa-home"></span>Home</a>
+        <a href="#"><span class="fa fa-users"></span>View Users</a>
+        <a href="#"><span class="fa fa-bar-chart"></span>View Graph</a>
+        <ul>
+            <li><a href="#">Temperature</a></li>
+            <li><a href="#">Humidity</a></li>
+            <li><a href="#">Light</a></li>
+            <li><a href="#">Weight</a></li>
+        </ul>
+        <a href="#"><span class="=fa fa-cog"></span>Profile</a>
+        <a href="#"><span class="fa fa-comments"></span>FeedBack</a>
+    </div>
+
+
+
+
+
+
+    <div class="container body-content col-sm-12">
+        @RenderBody()
+    </div>
+
+
+
+</body>
+</html>

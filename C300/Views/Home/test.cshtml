@@ -1,0 +1,146 @@
+@using System.IO;
+@{
+//var dataFile = System.IO.File.ReadAllLines(@"..\C300\wwwroot\txt\FirstText.txt");
+//Console.WriteLine(dataFile);
+//Array userData = File.ReadAllLines(dataFile);
+}
+@section ScriptSection {
+<link href="~/lib/styles/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="~/lib/scripts/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var ajaxUrl = "http://api.thingspeak.com/channels/541487/feed.json?key=J25VZR7MUMM8RJ4O&location=false"
+        $.getJSON(ajaxUrl, function (result) {
+            //var last = result.feeds[result.feeds.length - 1];
+            //var datetime = last.created_at;
+            //datelist = datetime.split("T")
+            //time = datelist[1].split("Z")
+
+            //var temp = last.field1;
+            //if (temp == null) {
+            //    temp = 0.0
+            //}
+
+            //var hum = last.field3;
+            //if (hum == null) {
+            //    hum = 0.0
+            //}
+
+            //var light = last.field2;
+            //if (light == null) {
+            //    light = 0.0
+            //}
+
+            //var weight = last.field4;
+            //if (weight == null) {
+            //    weight = 0.0
+            //}
+
+            //$.getJSON(
+            //    "/api/sql/upload/" + temp +"/"+hum+"/"+light+"/"+weight+ "/" + datelist[0]+" "+time[0],
+            //    function (data) {
+            //        console.log(data)
+
+            //    }
+            //);  
+
+            //All
+            //$.each(result.feeds, function (i, field) { 
+            //    console.log(field)
+            //    var last = field;
+            //    var datetime = last.created_at;
+            //    datelist = datetime.split("T")
+            //    time = datelist[1].split("Z")
+
+            //    var temp = last.field1;
+            //    if (temp == null || temp == "?") {
+            //        temp = 0.0
+            //    }
+
+            //    var hum = last.field3;
+            //    if (hum == null || hum == "?") {
+            //        hum = 0.0
+            //    }
+
+            //    var light = last.field2;
+            //    if (light == null || light == "?") {
+            //        light = 0.0
+            //    }
+
+            //    var weight = last.field4;
+            //    if (weight == null || weight == "?") {
+            //        weight = 0.0
+            //    }
+
+            //    $.getJSON(
+            //        "/api/sql/upload/" + temp +"/"+hum+"/"+light+"/"+weight+ "/" + datelist[0]+" "+time[0],
+            //        function (data) {
+            //            console.log(data)
+
+            //        }
+            //    );   
+            //});
+            
+             
+        });
+
+
+        $("#show").click(function () {
+            console.log("clicked")
+            if ($('#car2').is(':hidden')) {
+                console.log("hideing")
+                $('#car2').css("display", "");
+            }
+            else {
+                console.log("Showing")
+                $('#car2').css("display", "none");
+            }
+        });
+        $('#THH').DataTable({
+            ordering: true,
+            order: [[2, "desc"]],
+            paging: true,
+            searching: false,
+            info: true,
+            lengthChange: false,
+            pageLength: 5,
+            pagingType: "full_numbers",
+            dom: '<"top"i>rt<"bottom"lp>'
+
+        });
+
+    });
+</script>
+    }
+
+<h2>test</h2>
+
+
+@*@ViewData["text"]*@
+@*<p src="~/txt/FirstText.txt"></p>*@
+@*<div id="car2" style="display:none;">
+    <p>
+        testing lar
+    </p>
+</div>
+<button class="btnDB" id="show">Show</button>
+
+<table id="THH" class="table ">
+    <thead>
+        <tr>
+            <th id="id" class="heading">ID</th>
+            <th id="type" class="heading">type</th>
+            <th id="date" class="heading">Date</th>
+        </tr>
+    </thead>
+    <tbody id="bb">
+        <tr>
+            <td>poke.HumidityId</td>
+            <td>poke.HumidityId</td>
+            <td>poke.HumidityId</td>
+        </tr>
+    </tbody>
+</table>*@
+
+
+

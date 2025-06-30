@@ -1,0 +1,129 @@
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> @*--> <i class="glyphicon glyphicon-cloud"></i>*@
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<script>
+    //$(document).ready(function () { 
+    //    $("#firstText").click(function () {
+    //        document.getElementById("firstText").innerHTML = "Yay";
+            
+    //    });
+    //});
+    function divFunction() {
+        var x = document.getElementById("newFirstTxt").value;
+        document.getElementById("firstText").innerHTML = x;
+        //$("#editfirst").hide();
+    }
+</script>
+
+<div class="container" >
+    <div class="col-sm-12">
+        <h2 class="text-center">At EMS, we use technology to make life simpler and convenient for everyone.</h2>
+        <br />
+        <br />
+    </div>    
+
+    <div class="col-sm-12">
+        <blockquote class="blockquote-reverse col-sm-9">
+            <p class="text-center">
+                <u><i>WHO WE ARE</i></u>
+            </p>
+            <p id="firstText" style="font-size:initial;color:darkslategrey" data-toggle="modal" data-target="#editfirst">
+                We are committed to democratizing IoT technologies and services to make the world a
+                better & safer place by providing temperature, humidity, luminosity and weight levels
+                live and historical data accessible to users over the internet. Our service includes
+                a notification system to alert users on current levels. Being a member you are able to have
+                additional features such as email notifications of the levels.
+            </p>
+            <footer>From WWF's website</footer>
+        </blockquote>
+        <div class="text-center col-sm-3 thumbnail" style="background-color: gold">
+            <i class="glyphicon glyphicon-user" style="font-size: 125px;color:whitesmoke;margin-top:10%"></i>
+        </div>
+    </div>
+
+
+
+    <div class="col-sm-12">
+        <div class="text-center col-sm-3 thumbnail" style="background-color:aquamarine">
+            <i class="glyphicon glyphicon-user" style="font-size: 125px;color:whitesmoke;margin-top:10%"></i>
+        </div>
+        <blockquote class="col-sm-9">
+            <p class="text-center">
+                <u><i>WHO WE ARE</i></u>
+            </p>
+            <p style="font-size:initial;color:darkslategrey">
+                We are committed to democratizing IoT technologies and services to make the world a
+                better & safer place by providing temperature, humidity, luminosity and weight levels
+                live and historical data accessible to users over the internet. Our service includes
+                a notification system to alert users on current levels. Being a member you are able to have
+                additional features such as email notifications of the levels.
+            </p>
+            <footer>From WWF's website</footer>
+        </blockquote>
+        <div>
+            <input id="test" type="text" class="hide"/>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editfirst" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="text-primary">First Text</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row"> 
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Text:</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="newFirstTxt" class="form-control" value="" placeholder="Please Enter Your Text" />
+                        </div>
+                    </div>                 
+
+                    <div class="form-group">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9">
+                            <input onClick="divFunction()" type="submit" value="Save" class="btn btn-info" />
+                            @*<input type="reset" value="Reset" class="btn btn-default col-sm-offset-1"/>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .thumbnail {
+        margin-top: 20px;
+        margin-left: 10px;
+        margin-right: 10px;
+        height: 200%;
+        width: 20%;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px
+    }
+    .col-sm-12 {
+        margin-top: 1%
+    }
+</style>
+
+
+
+
+
+
+
+

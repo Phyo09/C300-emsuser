@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <meta charset="utf-8">
+    <title>JS Bin</title>
+    <script>
+        $(document).ready(function () {
+            (function ($) {
+                $("#UserGridView tbody").addClass("search");
+                $('#filter').keyup(function () {
+                    var rex = new RegExp($(this).val(), 'i');
+                    // var $t = $(this).children(":eq(4))");
+                    $('.search tr ').hide();
+
+                    //Recusively filter the jquery object to get results.
+                    $('.search tr ').filter(function (i, v) {
+                        //Get the 3rd column object here which is userNamecolumn
+                        var $t = $(this).children(":eq(" + "3" + ")");
+                        return rex.test($t.text());
+                    }).show();
+                })
+
+            }(jQuery));
+
+        });
+    </script>
+</head>
+
+<body>
+    <input type="text" name="" id="filter">
+    <table id="UserGridView">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">FirstName</th>
+                <th scope="col">LastName</th>
+                <th scope="col">UserName</th>
+            </tr>
+        </thead>
+        <tbody class="searchable">
+            <tr>
+                <td>
+                    <span id="EmpId">5</span>
+
+                </td>
+                <td>
+                    <span id="firstname">Brian</span>
+
+                </td>
+                <td>
+                    <span id="lastname">Balwin</span>
+
+                </td>
+                <td>
+                    <span id="username">BBalwin</span>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="EmpId">6</span>
+
+                </td>
+                <td>
+                    <span id="firstname">First</span>
+
+                </td>
+                <td>
+                    <span id="lastname">Last</span>
+
+                </td>
+                <td>
+                    <span id="username">NewUserName</span>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

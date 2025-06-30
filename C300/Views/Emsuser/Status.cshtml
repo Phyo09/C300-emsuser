@@ -1,0 +1,232 @@
+@{
+    ViewData["Title"] = "Status";
+
+    var result = ViewData["MSG"];
+    var result2 = ViewData["MSG2"];
+    var result3 = ViewData["MSG3"];
+    var result4 = ViewData["MSG4"];
+    var result5 = ViewData["Temp"] + " , " + ViewData["Humd"] + " , " + ViewData["Light"] + " , " + ViewData["Weight"];
+
+    var display = "";
+    int id = (int)ViewData["id"];
+    if (id == 1)
+    {
+        display = result as string;
+
+    }
+    else if (id == 2)
+    {
+
+        display = result2 as string;
+    }
+    else if (id == 3)
+    {
+
+        display = result3 as string;
+    }
+    else if (id == 4)
+    {
+        display = result4 as string;
+
+    }
+    else if (id == 5)
+    {
+        display = result5 as string;
+
+    }
+}
+@*}
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">*@
+<link rel="stylesheet" href="~/lib/styles/statusStyle.css" />
+
+
+<script>
+    $(document).ready(function () {
+        $("#temp").click(function () {
+                console.log("click");
+                ajaxCheck();
+            });
+        $("#humd").click(function () {
+                console.log("click");
+                ajaxCheck2();
+            });
+        $("#light").click(function () {
+                console.log("click");
+                ajaxCheck3();
+            });
+        $("#weight").click(function () {
+                console.log("click");
+                ajaxCheck4();
+            });
+            function ajaxCheck() {
+                var ajaxUrl = "http://api.thingspeak.com/channels/541487/feed.json?key=J25VZR7MUMM8RJ4O&location=false";
+            $.getJSON(ajaxUrl, function (result) {
+                    var last = result.feeds[result.feeds.length - 1];
+                    console.log(last);
+                    var datetime = last.created_at;
+                    datelist = datetime.split("T")
+                time = datelist[1].split("Z")
+                $.getJSON(
+                    "/api/sql/checkstatus/" + datetime + "/" + last.field1,
+                    function (data) {
+                        if (data == "0") {
+                            $("#status").html("Temperature Sensor is Inactive")
+                        }
+                        else {
+                            $("#status").html("Temperature Sensor is active")
+
+                        }
+                    }
+                );
+
+
+
+
+        });
+    }
+    function ajaxCheck2() {
+        var ajaxUrl = "http://api.thingspeak.com/channels/541487/feed.json?key=J25VZR7MUMM8RJ4O&location=false";
+            $.getJSON(ajaxUrl, function (result) {
+            var last = result.feeds[result.feeds.length - 1];
+            console.log(last);
+            var datetime = last.created_at;
+            datelist = datetime.split("T")
+                time = datelist[1].split("Z")
+                $.getJSON(
+                    "/api/sql/checkstatus2/" + datetime+"/" + last.field3,
+                    function (data) {
+                if (data == "0") {
+                            $("#status").html(" Humidity Sensor is Inactive")
+                        }
+                else {
+                            $("#status").html("humidity Sensor is active")
+
+                        }
+            }
+                );
+
+
+
+
+        });
+    }
+    function ajaxCheck3() {
+        var ajaxUrl = "http://api.thingspeak.com/channels/541487/feed.json?key=J25VZR7MUMM8RJ4O&location=false";
+            $.getJSON(ajaxUrl, function (result) {
+            var last = result.feeds[result.feeds.length - 1];
+            console.log(last.field2);
+            var datetime = last.created_at;
+            datelist = datetime.split("T")
+                time = datelist[1].split("Z")
+                $.getJSON(
+                    "/api/sql/checkstatus3/" + datetime + "/" + last.field2,
+                    function (data) {
+                if (data == "0") {
+                            $("#status").html("Light Sensor is Inactive")
+                        }
+                else {
+                            $("#status").html("Light Sensor is active")
+
+                        }
+            }
+                );
+
+
+
+
+        });
+    }
+    function ajaxCheck4() {
+        var ajaxUrl = "http://api.thingspeak.com/channels/541487/feed.json?key=J25VZR7MUMM8RJ4O&location=false";
+            $.getJSON(ajaxUrl, function (result) {
+            var last = result.feeds[result.feeds.length - 1];
+            console.log(last);
+            var datetime = last.created_at;
+            datelist = datetime.split("T")
+                time = datelist[1].split("Z")
+                $.getJSON(
+                    "/api/sql/checkstatus4/" + datetime + "/" + last.field4,
+                    function (data) {
+                if (data == "0") {
+                            $("#status").html(" weight Sensor is Inactive")
+                        }
+                else {
+                            $("#status").html("weight Sensor is active")
+
+                        }
+            }
+                );
+
+
+
+
+        });
+    }
+});
+</script>
+<style>
+    #status {
+        position: relative;
+    }
+
+    .w3-panel p {
+        font-size: 25px;
+    }
+
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+
+        .closebtn:hover {
+            color: black;
+        }
+</style>
+
+<h1 style="font-size:40px"><b>Arduino Uno Status</b></h1>
+<hr />
+<p style="font-size:20px;">
+    View the status  of the Arduino Microcontroller here-
+</p>
+<div class="w3-panel w3-green w3-round">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    <h2>Info</h2>
+    <p id="status"></p>
+</div>
+<br />
+<div class="form-horizontal">
+
+    <img src="~/images/arduino.png" style="height:40%;width:30%;margin-left:55%" />
+
+    <div id="status" style="margin-top:-25%">
+
+        <h3><b>Temperature port status</b></h3>
+        @*<a asp-action="Status" asp-controller="Emsuser" asp-route-id="1" class="btn btn-default btn-group-xs" style="background-color:royalblue;color:white;font-weight:bold">Show Status</a>*@
+        <button class="btn btn-default btn-group-xs" id="temp" style="background-color:royalblue;color:white;font-weight:bold">Temperature</button>
+        <br />
+        <br />
+        <h3><b>Humidity  port status</b></h3>
+        @*<a asp-action="Status" asp-controller="Emsuser" asp-route-id="2" class="btn btn-default btn-group-xs" style="background-color:royalblue;color:white;font-weight:bold">Show Status</a>*@
+        <button class="btn btn-default btn-group-xs" id="humd" style="background-color:royalblue;color:white;font-weight:bold">Humidity</button>
+        <br />
+        <br />
+        <h3><b>Light port status</b></h3>
+        @*<a asp-action="Status" asp-controller="Emsuser" asp-route-id="3" class="btn btn-default btn-group-xs" style="background-color:royalblue;color:white;font-weight:bold">Show Status</a>*@
+        <button class="btn btn-default btn-group-xs" id="light" style="background-color:royalblue;color:white;font-weight:bold">Light</button>
+        <br />
+        <br />
+        <h3><b>Weight port status</b></h3>
+        @*<a asp-action="Status" asp-controller="Emsuser" asp-route-id="4" class="btn btn-default btn-group-xs" style="background-color:royalblue;color:white;font-weight:bold">Show Status</a>*@
+        <button class="btn btn-default btn-group-xs" id="weight"  style="background-color:royalblue;color:white;font-weight:bold">Weight</button>
+        <br />
+        <br />
+
+    </div>
+</div>

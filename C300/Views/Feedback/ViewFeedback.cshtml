@@ -1,0 +1,503 @@
+@model List<Feedback>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        th {
+            background-color: #46B6E2;
+            color: white;
+        }
+
+        h1 {
+            font-weight: bold;
+            /*font-size: 10vw*/
+        }
+
+        select {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+        }
+
+        input[type=radio] {
+            width: 15px
+        }
+
+
+
+        #DrpSlotId {
+            width: 150px
+        }
+
+        label {
+            font-size: 15px
+        }
+    </style>
+
+
+
+    @section ScriptSection {
+        <script src="~/lib/scripts/jquery.dataTables.min.js"></script>
+        <script>
+        $(document).ready(function () {
+            //find error in console (using ME will be easier) as the jquery doesn't give error'
+            console.log("click")
+            $('#table').DataTable({
+                ordering: true,
+                paging: true,
+                searching: false,
+                info: false,
+                lengthChange: true,
+
+
+                dom: "<'top'i>rt<'bottom'flp><'clear'>",
+                //buttons:['pageLength']
+            });
+            $(".dataTables_length select").css('width', '60px');
+
+            //Search
+            var searchId = 1;
+            $("#rbAll").click(function () {
+                searchId = 1;
+
+            });
+            $("#rbEmail").click(function () {
+                searchId = 2;
+
+            });
+            $("#rbType").click(function () {
+                searchId = 3;
+            });
+            $("#rbContent").click(function () {
+                searchId = 4;
+            });
+            $("#rbStatus").click(function () {
+                searchId = 5;
+            });
+
+            $("#rbSolvedBy").click(function () {
+                searchId = 6;
+            });
+
+            $("#btnSearch").click(function () {
+                console.log("click")
+                if (searchId == 1) {
+                    var search, table, tr, td, i;
+                    search = document.getElementById("txtSearch").value.toLowerCase();
+                    table = document.getElementById("table");
+                    tr = table.getElementsByTagName("tr");
+                    for (i = 0; i < tr.length; i++) {
+                        td = tr[i].getElementsByTagName("td")[0];
+                        td1 = tr[i].getElementsByTagName("td")[1];
+                        td2 = tr[i].getElementsByTagName("td")[2];
+                        td3 = tr[i].getElementsByTagName("td")[3];
+                        td4 = tr[i].getElementsByTagName("td")[4];
+                        td5 = tr[i].getElementsByTagName("td")[5];
+                        td6 = tr[i].getElementsByTagName("td")[6];
+                        td7 = tr[i].getElementsByTagName("td")[7];
+                        td8 = tr[i].getElementsByTagName("td")[8];
+
+
+                        if (td, td1, td2, td3, td4, td5, td6, td7, td8) {
+                            if (td.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td1.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td2.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td3.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td4.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td5.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td6.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td7.innerHTML.toLowerCase().indexOf(search) > -1 |
+                                td8.innerHTML.toLowerCase().indexOf(search) > -1
+                            ) {
+                                tr[i].style.display = "";
+                            }
+                            else {
+                                tr[i].style.display = "None";
+                            }
+                        }
+                    }
+                }
+
+                //email
+                else if (searchId == 2) {
+                    var search, table, tr, td, i;
+                    search = document.getElementById("txtSearch").value.toLowerCase();
+                    table = document.getElementById("table");
+                    tr = table.getElementsByTagName("tr");
+                    for (i = 0; i < tr.length; i++) {
+                        td = tr[i].getElementsByTagName("td")[1];
+
+                        if (td) {
+                            if (td.innerHTML.toLowerCase().indexOf(search) > -1) {
+                                tr[i].style.display = "";
+                            }
+                            else {
+                                tr[i].style.display = "None";
+                            }
+                        }
+                    }
+                }
+
+                //type
+                else if (searchId == 3) {
+
+                    var search, table, tr, td, i;
+                    search = document.getElementById("txtSearch").value.toLowerCase();
+                    table = document.getElementById("table");
+                    tr = table.getElementsByTagName("tr");
+                    for (i = 0; i < tr.length; i++) {
+                        td = tr[i].getElementsByTagName("td")[2];
+
+                        if (td) {
+                            if (td.innerHTML.toLowerCase().indexOf(search) > -1) {
+                                tr[i].style.display = "";
+                            }
+                            else {
+                                tr[i].style.display = "None";
+                            }
+                        }
+                    }
+
+                }
+
+                //content
+                else if (searchId == 4) {
+                    var search, table, tr, td, i;
+                    search = document.getElementById("txtSearch").value.toLowerCase();
+                    table = document.getElementById("table");
+                    tr = table.getElementsByTagName("tr");
+                    for (i = 0; i < tr.length; i++) {
+                        td = tr[i].getElementsByTagName("td")[4];
+
+                        if (td) {
+                            if (td.innerHTML.toLowerCase().indexOf(search) > -1) {
+                                tr[i].style.display = "";
+                            }
+                            else {
+                                tr[i].style.display = "None";
+                            }
+                        }
+                    }
+                }
+
+                //status
+                else if (searchId == 5) {
+
+                    var search, table, tr, td, i;
+                    search = document.getElementById("txtSearch").value.toLowerCase();
+                    table = document.getElementById("table");
+                    tr = table.getElementsByTagName("tr");
+                    for (i = 0; i < tr.length; i++) {
+                        td = tr[i].getElementsByTagName("td")[7];
+
+                        if (td) {
+                            if (td.innerHTML.toLowerCase().indexOf(search) > -1) {
+                                tr[i].style.display = "";
+                            }
+                            else {
+                                tr[i].style.display = "None";
+                            }
+                        }
+                    }
+
+                }
+
+                else if (searchId == 6) {
+
+                    var search, table, tr, td, i;
+                    search = document.getElementById("txtSearch").value.toLowerCase();
+                    table = document.getElementById("table");
+                    tr = table.getElementsByTagName("tr");
+                    for (i = 0; i < tr.length; i++) {
+                        td = tr[i].getElementsByTagName("td")[8];
+
+                        if (td) {
+                            if (td.innerHTML.toLowerCase().indexOf(search) > -1) {
+                                tr[i].style.display = "";
+                            }
+                            else {
+                                tr[i].style.display = "None";
+                            }
+                        }
+                    }
+
+                }
+
+            });
+
+
+            //key up
+            //$(document).ready(function () {
+            //    $("#txtSearch").on("keyup", function () {
+            //        var value = $(this).val().toLowerCase();
+            //        $("#table tr").filter(function () {
+            //            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            //        });
+            //    });
+            //});
+
+            //drop
+            $("#DrpSlotId").change(function () {
+                var search, table, tr, td, i;
+                search = $("#DrpSlotId").val().toLowerCase();
+                table = document.getElementById("table");
+                tr = table.getElementsByTagName("tr");
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[7];
+
+                    if (td) {
+                        if (search == "all") {
+                            tr[i].style.display = "";
+
+                        }
+                        else if (td.innerHTML.toLowerCase().indexOf(search) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "None";
+                        }
+                    }
+                }
+            });
+
+        });
+
+
+
+          //count row
+            //$(document).ready(function () {
+
+            //   // var rowCount = $("#table > tbody > tr").length;
+            //    //var output = '<b>Number of records found : ' + $("#table tr").not("thead tr").length;
+            //   // $("#count").html(rowCount);
+            //   // if (searchId == 1) {
+
+            //    //    $("#count").html(output);
+            //    //}
+
+            //    else if (searchId == 2)
+            //    {
+
+            //        var rows = $('#rbEmail').parent().find('tr');
+            //        var count = 0;
+
+            //        for (var i = 0; i < rows.size(); i++) {
+            //            var el = rows.get(i);
+            //            ++count;
+            //        }
+            //        $('count').html(output);
+            //    }
+
+            //            });
+
+            // var rowCount = $('table >tbody >tr').length;
+
+           // $("#table").attr('rows').length;
+
+        </script>
+
+    }
+
+
+
+    <h1 style="color:orange ; text-align:center">Manage Feedbacks</h1>
+    <hr />
+
+    @*<form  asp-action="ViewFeedback">*@
+    <div class="container col-sm-12">
+
+        <div class="col-sm-12">
+            <div class="col-sm-6">
+                <label for="txtSearch" class="col-sm-2" style="margin-top:2%"><b>Search for:</b></label>
+                <div class="input-group col-sm-8">
+                    <input id="txtSearch" type="text" style="border-radius: 15px" />
+                    <span class="input-group-btn">
+                        <button id="btnSearch" class="btn-info" type="submit" style="border-radius:25px">
+                            <span class="fa fa-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-4" style="margin-top:1%">
+                <input checked="checked" id="rbAll" name="search" type="radio" /><b class="radioSearch">All</b>
+                <input id="rbEmail" name="search" type="radio" /><b class="radioSearch">Email</b>
+                <input id="rbType" name="search" type="radio" /><b class="radioSearch">Type</b>
+                <input id="rbContent" name="search" type="radio" /><b class="radioSearch">Content</b>
+                <input id="rbStatus" name="search" type="radio" /><b class="radioSearch">Status</b>
+                <input id="rbSolvedBy" name="search" type="radio" /><b class="radioSearch">Solved By</b>
+
+                @*<div class="col-sm-3">*@
+                <select id="DrpSlotId" class="form-control">
+                    <option value="select">STATUS</option>
+                    <option value="all">All (@ViewData["all"])</option>
+                    <option value="pending">Pending (@ViewData["pending"])</option>
+                    <option value="solved">Solved (@ViewData["solved"])</option>
+
+                </select>
+
+                @*</div>*@
+            </div>
+
+            @*<div class="col-sm-4" style="margin-top:1%">*@
+            @*<label class="control-label col-sm-3">Status </label>*@
+            @*<div class="col-sm-6">
+                    <select id="DrpSlotId" class="form-control col-sm-12">
+                        <option value="all">All (@ViewData["all"])</option>
+                        <option value="pending">Pending (@ViewData["pending"])</option>
+                        <option value="solved">Solved (@ViewData["solved"])</option>
+
+                    </select>
+
+                </div>
+                </div>*@
+
+            @*<div id="count" class="col-sm-1">
+
+                </div>*@
+        </div>
+
+        <table id="table" class="table table-bordered table-condensed table-hover table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">ID</th>
+                    <th class="col-sm-1">Email</th>
+                    <th class="col-sm-1">Feedback Type</th>
+                    <th class="col-sm-2">Created Time</th>
+                    <th class="col-sm-2">Feedback Content</th>
+                    <th class="col-sm-2">Solved Time</th>
+                    <th class="col-sm-1">Action</th>
+                    <th class="col-sm-1">Status</th>
+                    <th class="col-sm-1">Solved by</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model)
+            {
+                    <tr>
+                        <td>@b.FeedbackId</td>
+                        <td>@b.Email</td>
+                        @if (b.FeedbackType == 1)
+                {
+                            <td>Comments</td>
+                        }
+                        else if (b.FeedbackType == 2)
+                        {
+                            <td>Bug Reports</td>
+                        }
+                        else if (b.FeedbackType == 3)
+                        {
+                            <td>Question</td>
+                        }
+
+                        <td>@string.Format("{0:dd-MM-yyyy HH:mm:ss}", b.Datetime)</td>
+                        <td>@b.Description</td>
+                        <td>@string.Format("{0:dd-MM-yyyy HH:mm:ss}", b.SolvedTime)</td>
+
+                        <td>
+                            <a asp-action="ReplyFeedback" asp-route-id="@b.FeedbackId" class="btn btn-primary">Reply</a>
+
+                        </td>
+
+                        @if (b.Reply == null)
+                        {
+                            <td style="color:red">PENDING</td>
+                        }
+
+                        else if (b.Reply != null)
+                        {
+                            <td style="color:green ">SOLVED</td>
+                        }
+                        <td>@b.Solvedby</td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+        <form asp-action="Create1" class="col-sm-8">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <h4><b>Export Format:</b></h4>
+
+            <div>
+
+                @*<label class="container">
+                        One
+                        <input type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+
+                    <label class="container">
+                        Two
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+
+                    <label class="container">
+                        Three
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>*@
+
+                @*<label class="container">
+                        Four
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>*@
+
+                <input id="XLSX" name="SelectedFormat" type="radio" checked value="XLSX" />
+
+                <label for="XLSX"><b>XLSX</b></label>
+
+
+                <input id="XLS" name="SelectedFormat" type="radio" value="XLS" />
+
+                <label for="XLS"><b>XLS</b></label>
+
+
+
+                <input id="ODS" name="SelectedFormat" type="radio" value="ODS" />
+
+                <label for="ODS"><b>ODS</b></label>
+
+
+
+                <input id="CSV" name="SelectedFormat" type="radio" value="CSV" />
+
+                <label for="CSV"><b>CSV</b></label>
+
+
+
+                <input id="PDF" name="SelectedFormat" type="radio" value="PDF" />
+
+                <label for="PDF"><b>PDF</b></label>
+
+                @*<button type="submit" class="btn btn-primary" style="margin-top:-50px;margin-left:50px">Export</button>*@
+
+                <div class="col-sm-offset-5">
+                    <button type="submit" class="btn btn-primary" style="margin-top:-50px">Export</button>
+                </div>
+            </div>
+
+
+
+
+
+        </form>
+    </div>
+    @*</form>*@

@@ -1,0 +1,99 @@
+@model  List<Comment>
+@{
+    List<string> name = ViewData["name"] as List<string>;
+    List<string> pic = ViewData["pic"] as List<string>;
+    var bad = ViewData["report"];
+}
+@if (Model != null)
+{
+
+    @for (int i = 0; i < Model.Count; i++)
+    {
+
+        <!-- Comment - Dummy -->
+        <div class="comment">
+            <!-- Comment Avatar -->
+            @{
+
+                var image = "data:image/png;base64," + pic[i];
+
+            }
+            <div class="comment-avatar">
+
+                <img src="@image">
+            </div>
+
+
+            <!-- Comment Box -->
+            <div class="comment-box">
+                <span style="margin-left:89%;margin-top:-20%">Likes-@Model[i].Like <i class="fa fa-heart" style="font-size:12px;color:red"></i></span>
+                <div class="comment-text">@Model[i].Content</div>
+
+                <div class="comment-footer">
+                    <div class="comment-info">
+                        @{
+                            var image2 = "data:image/png;base64," + Model[i].Picture;
+                        }
+                        <img src="@image2" alt="">
+                        <br />
+                        <hr />
+                        <span class="comment-author">
+                            @if (Model[i].Anonymous == 2)
+                            {
+                                <span class="comment-date">By Anonymous User</span>
+
+                            }
+                            else
+                            {
+                                <span class="comment-date">By User-@name[i] (UserId-@Model[i].UserId)</span>
+                            }
+                            <br />
+                        </span>
+
+                        <span class="comment-date">Posted:@Model[i].CreatedDate</span>
+                        <a asp-action="Likes" asp-controller="Comment" asp-route-x="@Model[i].CommentId"><i class="fa fa-thumbs-up" style="font-size:22px;margin-left:112%"></i></a>
+
+
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <span class="comment-date" style="margin-left:108%"><a asp-action="Delete" asp-controller="Comment" asp-route-id="@Model[i].CommentId">Delete</a></span>
+                        }
+                        <br />
+                        <span class="comment-date" style="margin-left:108%;"><a asp-action="Report" style="color:red" asp-controller="Comment" asp-route-id="@Model[i].CommentId">Report</a></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+                            }
+
+
+                            }
+<style>
+    .comment-avatar {
+        border: 3px solid #fff;
+        border-radius: 50%;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+        height: 80px;
+        overflow: hidden;
+        position: absolute;
+        width: 80px;
+    }
+
+    .comment-form .comment-avatar img,
+    .comment .comment-avatar img {
+        display: block;
+        height: auto;
+        width: 170%;
+    }
+</style>
+<script>
+    function clickAndDisable(link) {
+
+        link.onclick = function (event) {
+            event.preventDefault();
+        }
+    }
+</script>
+

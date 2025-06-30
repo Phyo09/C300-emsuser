@@ -1,0 +1,87 @@
+@model Words
+
+@{
+
+    var word = ViewData["modelword"] as List<Words>;
+}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-3.3.1.js "></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js  "></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js  "></script>
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+<script>
+    $(document).ready(function () {
+
+
+
+        $('#table_id').DataTable();
+        function ConfirmDelete() {
+            if (confirm("Are you sure you want deactivate?") == false) {
+                event.stopPropagation;
+                event.preventDefault;
+                return false;
+
+            }
+        }
+    });
+</script>
+<style>
+    * {
+        text-shadow: none;
+    }
+</style>
+<span style="color:red">@TempData["Msg"]</span>
+<div data-role="main" class="ui-content">
+    <a href="#myPopup" data-rel="popup" class="ui-btn ui-btn-inline ui-corner-all ui-icon-check ui-btn-icon-left"><b style="font-weight:500">Add Word</b></a>
+
+    <div data-role="popup" id="myPopup" class="ui-content" style="min-width:250px;background-color:deepskyblue">
+        <form method="post" asp-action="Word" asp-controller="Comment">
+            <div>
+                <h3>Add Vulgar Word</h3>
+                <label asp-for="Word" class="ui-hidden-accessible">Vulgar Word:</label>
+                <input asp-for="Word" type="text" placeholder="Word">
+
+                <input type="submit" style="background-color:lightgreen" id="submit" asp-action="Word" asp-controller="Comment" data-inline="true" value="Add">
+            </div>
+        </form>
+    </div>
+</div><br />
+<br />
+<table id="table_id" class="display" width="80%">
+    <thead>
+        <tr>
+            <th>Word ID</th>
+            <th>Vulgar Words</th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in word)
+            {
+            <tr>
+                <td>@item.Wordid</td>
+                <td>@item.Word</td>
+
+
+
+
+                <td>
+
+
+
+                    <a asp-action="DeleteWord" id="delete" asp-controller="Comment" onclick="return ConfirmDelete()" asp-route-id="@item.Wordid" class="btn btn-danger" style="font-weight:bold;font-size:15px;border-radius:12px;color:black;text-shadow:none">Delete</a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+

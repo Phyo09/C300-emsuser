@@ -1,0 +1,22 @@
+@model List<Emsuser>
+    @{
+        Layout = null;
+    }
+
+    <h4 style="text-align:center;border-bottom:1px solid #808080">EMSuser Information</h4>
+    <div class="container">
+        @foreach (var item in Model)
+        {
+            <p><label style="color:limegreen;font-size:18px;">Name:</label>@item.Name</p>
+            <p><label style="color:limegreen;font-size:18px;">Role:</label>@item.Role</p>
+            <p><label style="color:limegreen;font-size:18px;">Email:</label>@item.Email</p>
+            <p><label style="color:limegreen;font-size:18px;">Country:</label>@item.Country</p>
+            <p><label style="color:limegreen;font-size:18px;">DOB:</label>@item.Dob</p>
+            <p><label style="color:limegreen;font-size:18px;"> Status:</label>@item.Status</p>
+            <p><label style="color:limegreen;font-size:18px;">Phone:</label>@item.Phone</p>
+
+        }
+
+
+    </div>
+

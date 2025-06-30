@@ -1,0 +1,74 @@
+@model List<Emsuser>
+@{
+    ViewData["Title"] = "ViewUsers";
+}
+<style>
+    b {
+        font-weight: bold;
+        font-size: 13px;
+    }
+
+    .button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 15%;
+        margin-top: 5px;
+        font-size: 13px;
+    }
+
+
+    button:hover, a:hover {
+        opacity: 0.7;
+    }
+</style>
+
+
+<hr />
+<div class="row">
+    @if (Model != null)
+    {
+        @foreach (Emsuser user in Model)
+        {
+            <div class="col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a asp-action="Update" style="font-size:20px" asp-controller="Emsuser">
+                            @user.Name
+                        </a>
+                    </div>
+                    <div class="panel-body " style="margin:auto;">
+                        @{
+                            var image = "data:image/png;base64," + user.Picture;
+                        }
+                        <img id="photo" src="@image" alt="@user.Picture" style="height:80px;width:80px" />
+                        <br />
+                        <b>User ID:@user.UserId</b>
+                        <br />
+                        <b>Email:@user.Email</b>
+                        <br />
+                        <b>Status:@user.Status</b>
+                        <br />
+                        <b>Role:@user.Role</b>
+                        <br />
+                        <a asp-action="Update" asp-route-id="@user.UserId" class="btn btn-success" style="font-weight:bold;font-size:15px;border-radius:12px" asp-controller="Emsuser">Update</a>
+                        <a asp-action="Deactivate" asp-route-id="@user.UserId" class="btn btn-danger" style="font-weight:bold;font-size:15px;border-radius:12px" asp-controller="Emsuser">Deactivate</a>
+
+
+                    </div>
+                </div>
+            </div>
+
+                            }
+
+
+                            }
+
+
+
+</div>

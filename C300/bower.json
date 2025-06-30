@@ -1,0 +1,11 @@
+{
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "jquery": "3.2.1",
+    "bootstrap": "v3.3.7",
+    "eonasdan-bootstrap-datetimepicker": "v4.17.45",
+    "jquery-validation-unobtrusive": "v3.2.6"
+
+  }
+}

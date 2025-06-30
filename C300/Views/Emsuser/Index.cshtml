@@ -1,0 +1,300 @@
+@using C300.Models
+@model List<Emsuser>
+@{
+    ViewData["Title"] = "ViewUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.material.min.css" />
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.material.min.js"></script>
+
+
+
+@*<script src="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"></script>*@
+<link rel="stylesheet" href="style.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="~/lib/styles/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="~/lib/scripts/jquery.dataTables.min.js"></script>
+<script src="~/lib/scripts/jquery.dataTables.min.js"></script>
+
+<script>
+    function ConfirmDelete() {
+        if (confirm("Are you sure you want deactivate?") == false) {
+            event.stopPropagation;
+            event.preventDefault;
+            return false;
+
+        }
+    }
+    function myFunction() {
+
+        var enter, search, table, tr, td, td2, td3, i;
+        enter = document.getElementById("myInput");
+        search = enter.value.toUpperCase();
+        table = document.getElementById("tableid");
+        tr = table.getElementsByTagName("tr");
+
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            td2 = tr[i].getElementsByTagName("td")[1];
+            td3 = tr[i].getElementsByTagName("td")[2];
+            if (td, td2, td3) {
+                if (td.innerHTML.toUpperCase().indexOf(search) > -1 | td2.innerHTML.toUpperCase().indexOf(search) > -1 | td3.innerHTML.toUpperCase().indexOf(search) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+
+            }
+        }
+    }
+
+
+</script>
+
+
+<style>
+    th {
+        padding-top: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        padding-bottom: 12px;
+        background-color: #46B6E2;
+    }
+
+    tr td {
+        padding: 10px;
+        color: white;
+        border-bottom: 1px solid #111;
+        border-collapse: collapse;
+        font-size: 20px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2
+    }
+
+    input[type=text], .form-control {
+        width: 130px;
+        -webkit-transition: width 0.4s ease-in-out;
+        transition: width 0.4s ease-in-out;
+    }
+
+        input[type=text]:focus {
+            width: 100%;
+        }
+
+    .export-form-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0, 20px;
+        width: 12%;
+        height: 5%;
+        background-color: #57b846;
+        border-radius: 25px;
+        font-family: 'Microsoft Sans Serif';
+        font-size: 15px;
+        color: white;
+        line-height: 0;
+        text-transform: uppercase;
+        transition: all 0.4s;
+    }
+
+
+    h2 {
+        font-size: 50px;
+        color: darkorange;
+        font-weight: 700;
+    }
+
+    body {
+        background-color: white;
+    }
+
+
+    .file_label {
+        display: block;
+        margin: 50px auto;
+        font-size: 20px;
+        font-family: Arial;
+        width: 200px;
+        height: 40px;
+        line-height: 40px;
+        background-color: #f39c12;
+        color: #FFF;
+        text-align: center;
+        border: 1px solid #CCC;
+        border-radius: 5px;
+        transition: all 0.3s ease-in-out
+    }
+
+        .file_label:hover {
+            background-color: orange;
+            color: #ffffff;
+        }
+
+    .fa {
+        margin-right: 5px
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover({
+            title: setData,
+            html: true,
+            placement: 'right'
+
+        });
+        function setData(id) {
+            var set_data = '';
+            var element = $(this);
+            var id = element.attr("id");
+            $.ajax({
+                url: "/Emsuser/EmsuserInfo?id" + id,
+                method: "post",
+                async: false,
+                data: { id: id },
+                success: function (data) {
+                    set_data = data;
+
+                }
+
+            });
+            return set_data;
+
+        }
+
+        $('#tableid').DataTable({
+            searching: false,
+            columnDefs: [
+                {
+
+                    targets: [0, 1, 2],
+                    className: 'mdl-data-table__cell--non-numeric'
+
+                }
+            ]
+        });
+
+
+    });
+</script>
+<span style="color:red">@TempData["Msg"]</span><br />
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <h4><b>Export Format:</b></h4>
+    <div>
+        <input id="XLSX" name="SelectedFormat" type="radio" checked value="XLSX" />
+        <label for="XLSX"><b>XLSX</b></label>
+
+        <input id="XLS" name="SelectedFormat" type="radio" value="XLS" />
+        <label for="XLS"><b>XLS</b></label>
+
+        <input id="ODS" name="SelectedFormat" type="radio" value="ODS" />
+        <label for="ODS"><b>ODS</b></label>
+
+        <input id="CSV" name="SelectedFormat" type="radio" value="CSV" />
+        <label for="CSV"><b>CSV</b></label>
+
+        <input id="PDF" name="SelectedFormat" type="radio" value="PDF" />
+        <label for="PDF"><b>PDF</b></label>
+    </div>
+
+    <button type="submit" class="export-form-btn ">Export</button>
+
+
+</form>
+<a asp-action="AddUser" asp-controller="Emsuser" style="margin-right:6%" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Create User</a>
+
+
+<u><a asp-action="ViewUsers" asp-controller="Emsuser"><span class="fa fa-user" style="font-size:18px">View Users As Panel</span></a></u>
+<br />
+<br />
+
+<input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search for Users!..">
+
+
+<table class="display" style="width:100%" id="tableid">
+    <thead>
+        <tr class="header">
+            <th style=" color:black">Name</th>
+            <th style="color:black">UserId</th>
+            <th style="color:black">Email</th>
+            <th style="color:black">Role</th>
+            <th style="color:black">Status</th>
+            <th style="color:black">Updated By</th>
+            <th style="color:black">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model != null)
+            {
+            @foreach (Emsuser item in Model)
+                {
+
+                <tr>
+                    <td>
+                        <a href="#" data-toggle="popover" data-trigger="hover" id="@item.UserId">@item.Name</a>
+                    </td>
+                    <td>@item.UserId</td>
+                    <td>@item.Email</td>
+                    <td>@item.Role</td>
+                    @if (item.Status == "Active")
+                    {
+                        <td style="color:green">@item.Status</td>
+                    }
+                    else
+                    {
+                        <td style="color:red">@item.Status</td>
+                    }
+                    <td>@item.UpdatedBy</td>
+
+                    <td>
+
+                        <a asp-action="Update" asp-controller="Emsuser" asp-route-id="@item.UserId" class="btn btn-success" style="font-weight:bold;font-size:15px;border-radius:12px">Update</a>
+                        @if (item.Status == "Active")
+                        {
+                            <a asp-action="Activate" asp-controller="Emsuser" asp-route-id="@item.UserId" class="btn btn-success disabled" style="font-weight:bold;font-size:15px;border-radius:12px">Activate</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Activate" asp-controller="Emsuser" asp-route-id="@item.UserId" class="btn btn-success" style="font-weight:bold;font-size:15px;border-radius:12px">Activate</a>
+                        }
+
+
+                        <a asp-action="Deactivate" asp-controller="Emsuser" onclick="return ConfirmDelete()" asp-route-id="@item.UserId" class="btn btn-danger" style="font-weight:bold;font-size:15px;border-radius:12px">Deactivate</a>
+
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+
+<br />
+<br />
+
+@using (Html.BeginForm("UploadCsv", "Emsuser", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="input_file" style="float:left;margin-top:-5%">
+        <label for="attachmentcsv" class="file_label" style="color:black;"><i class="fa fa-upload" aria-hidden="true"></i>Import CSV</label>
+
+        <input type="file" style="display:none" name="attachmentcsv" id="attachmentcsv">
+
+    </div>
+    <button type="submit" style="margin-left:5%;margin-top:-1%" class="btn btn-primary">Upload</button>
+}
+
+
+

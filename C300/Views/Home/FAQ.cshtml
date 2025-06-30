@@ -1,0 +1,200 @@
+
+@{
+    ViewData["Title"] = "FAQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<script>
+    $(".tabbable.responsive").resptabs("option", "maxSmallWidth", 479);
+</script>*@
+@*@section ScriptSection {
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> ---> <i class="fa fa-cloud"></i>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">--> <i class="glyphicon glyphicon-cloud"></i>
+}*@
+<style>
+    .faqHeader {
+        font-size: 27px;
+        margin: 20px;
+    }
+
+    .panel-heading [data-toggle="collapse"]:after {
+        font-family: 'Glyphicons Halflings';
+        content: "\e072"; /* "play" icon e072*/
+        float: left;
+        color: #F58723;
+        font-size: 18px;
+        line-height: 22px;
+        /* rotate "play" icon from > (right arrow) to down arrow */
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+    }
+
+    .panel-heading [data-toggle="collapse"].collapsed:after {
+        /* rotate "play" icon from > (right arrow) to ^ (up arrow) */
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+        color: #454444;
+    }
+
+    /*.nav-tabs {
+        background-color: lightgrey;
+    }*/
+
+    /*.tab-content {
+        background-color: #303136;
+        color: #fff;
+        padding: 5px
+    }*/
+
+    hr.style11 {
+        height: 6px;
+        background: url(http://ibrahimjabbari.com/english/images/hr-11.png) repeat-x 0 0;
+        border: 0;
+    }
+</style>
+
+<div class="col-sm-11 container">
+    <h2 class="text-center">Easy steps to get started</h2>
+    <br />
+    <div class="tabbable responsive table-bordered" >
+        <ul class="nav nav-tabs ">
+            <li class="active" style="width:50%"><a href="#tab1" data-toggle="tab"><b><u>Sign up</u></b></a></li>
+            <li style="width:50%"><a href="#tab2" data-toggle="tab"><b><u>User guide</u></b></a></li>
+        </ul> @*end of tab labels*@
+
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab1">
+                <br />
+                <p class="text-center">It's easy to sign up for an account and start receiving information from our sensors by providing basic information:</p>
+                <div class="col-sm-offset-5">
+                    <ul>
+                        <li>Your email address</li>
+                        <li>Basic information about youtself</li>
+                    </ul>
+                </div>
+                <div class="text-center">
+                    <p>
+                        After signing up, remember to <a>confirm your email address</a> to activate your EMS account
+                        in order to receive updates and notifications
+                    </p>
+                </div>
+                
+            </div> @*end of tab1 content*@
+
+            <div class="tab-pane fade in" id="tab2">
+                <br/>
+                <p class="text-center">If you need a complete guide for our website,<br/>you can download the user guide using the link below. <br /><br/>
+                    <br /><a>CLICK HERE TO DOWNLOAD </a> <i class="glyphicon glyphicon-cloud-download" style="font-size: 30px"></i><br /><br/>
+                    Ensure that you have a PDF reader to view the user guide.<br/><br/>
+                    <a href="https://adobe-reader.en.softonic.com/download">DOWNLOAD PDF READER</a>
+                </p>
+            </div>
+        </div> <!-- /tab-content -->
+    </div> <!-- /tabbable -->
+</div>
+
+<br/>
+<br />
+<hr class="style11">
+<br />
+<h3 class="text-center"><i class="glyphicon glyphicon-arrow-down"></i> Scroll down for FAQ section <i class="glyphicon glyphicon-arrow-down"></i></h3>
+<br />
+<hr class="style11">
+<br />
+
+
+
+@*http://www.prepbootstrap.com/bootstrap-template/faq-example use 3*@
+<div class="container col-sm-11">
+    <h2 class="text-center">FREQUENTLY ASKED QUESTIONS SECTION</h2>
+    <br />
+    <div class="text-center">
+        Looking for answers? Try looking here as most questions can be answered instantly.
+    </div>
+    <br />
+    <div class="panel-group" id="accordion">
+        <div class="faqHeader">General questions</div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    How do I delete my EMS account?</a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    To delete account; Log in to EMS with your email and password. Next, on the left sidebar click
+                    on the Profile tab. In the profile tab, go down to the bottom most of the page and select 
+                    "Deactivate your account". Please confirm your choice by clicking on one of the options that 
+                    appears in the pop-up box.
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTen">
+                     How can I reset my EMS account password?</a>
+                </h4>
+            </div>
+            <div id="collapseTen" class="panel-collapse collapse">
+                <div class="panel-body">
+                    Need to fill
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">
+                        How can I change my email address?</a>
+                </h4>
+            </div>
+            <div id="collapseEleven" class="panel-collapse collapse">
+                <div class="panel-body">
+                    Need to fill
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                        When does the live and historical data get updated?</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    Need to fill
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                        What would I need to enable if I would like to get notification updates on the data?</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                    Didn't find what you are looking for? Try the <a asp-action="ContactUs" asp-controller="Home">CONTACT US</a> page. You can also find more 
+                    information about our website by downloading our <a>user guide</a>.
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+

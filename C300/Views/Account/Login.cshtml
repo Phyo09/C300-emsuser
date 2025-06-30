@@ -1,0 +1,295 @@
+﻿@model LoginUser
+@{
+    Layout = ViewData["Layout"] as string;
+    string msg = ViewData["Message"] as string;
+}
+<script>
+    //function createCookie(name, value, days) {
+    //    if (days) {
+    //        var date = new Date();
+    //        date.setTime(date.gettime() + (days * 24 * 60 * 60 * 1000));
+    //        var expires = "; = expires=" + date.toUTCString();
+
+    //    }
+    //    else var expires = "";
+    //    document.cookie = name + "=" + value + expires + "; path=/";
+
+    //}
+
+    //function readCookie(name) {
+    //    var nameEQ = name + "=";
+    //    var ca = document.cookie.split(';');
+    //    for (var i = 0; i < ca.length; i++) {
+    //        var c = ca[i];
+    //        while (c.charAt(0) == ' ') c.substring(1, c.length);
+    //        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    //    }
+    //    return null;
+
+    //}
+
+    //function eraseCookie(name) {
+    //    createCookie(name, "", -1);
+    //}
+
+    if ($('#remember').attr('checked')) {
+        var email = $('#Email').attr("value");
+        var password = $('#Password').attr("value");
+        // set cookies to expire in 14 days
+        $.cookie('Email', email, { expires: 14 });
+        $.cookie('Password', password, { expires: 14 });
+        $.cookie('remember', true, { expires: 14 });
+    } else {
+        // reset cookies
+        $.cookie('Email', null);
+        $.cookie('Password', null);
+        $.cookie('remember', null);
+    }
+
+
+
+    var remember = $.cookie('remember');
+    if (remember == 'true') {
+        var email = $.cookie('Email');
+        var password = $.cookie('Password');
+        //autofill the fields
+        $('#Email').attr("value", email);
+        $('#Password').attr("value", password);
+
+    }
+
+</script>
+<style>
+    /*#table {
+        width: 500px;
+        background-color: #ffffff;
+        margin-top: auto;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: auto;
+    }*/
+
+    .login-title {
+        color: #fff;
+        font-weight: bold;
+        font-family: 'Microsoft Sans Serif';
+        text-align: center;
+        display: block;
+        background-color: #57b846;
+        line-height: 1;
+        width: 100%;
+        top: 0;
+        left: 0;
+        padding-top: 30px;
+        padding-bottom: 39px;
+    }
+
+    .form-group {
+        width: 100%;
+        background-color: white;
+        border-radius: 27px;
+        margin-top: 5%;
+        z-index: 1;
+    }
+
+    /*.p-t-13{
+        padding-top: 13px;
+    }
+
+    .p-b-23{
+        padding-bottom: 23px;
+    }*/
+
+    .text-right {
+        text-align: right !important;
+    }
+
+    .form-horizontal {
+        text-align: center;
+    }
+
+    .form-control {
+        font-family: 'Microsoft Sans Serif';
+        font-weight: bold;
+        font-size: 15px;
+        color: black;
+        line-height: 1.2;
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 55px;
+        background: #ebebeb;
+        border-radius: 27px;
+        padding: 0 35px 0 35px;
+        outline: none;
+        border: none;
+    }
+
+    input {
+        outline: none;
+        border: none;
+    }
+
+    * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+    }
+
+    .container-login {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 15px;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        background-color: white;
+        box-sizing: border-box;
+        box-shadow: initial;
+    }
+
+    .container-login-form-btn col {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .login-form-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0, 20px;
+        width: 100%;
+        height: 50px;
+        background-color: #57b846;
+        border-radius: 25px;
+        font-family: 'Microsoft Sans Serif';
+        font-size: 15px;
+        color: white;
+        line-height: 1,2;
+        text-transform: uppercase;
+        transition: all 0.4s;
+    }
+
+    button {
+        outline: none !important;
+        border: none;
+        background: transparent;
+        -webkit-appearance: button;
+        overflow: visible;
+        touch-action: manipulation;
+    }
+
+    .has-error {
+        width: 100%;
+        background-color: white;
+        border-radius: 27px;
+        border-top-left-radius: 27px;
+        border-top-right-radius: 27px;
+        border-bottom-right-radius: 27px;
+        border-bottom-left-radius: 27px;
+        z-index: 1;
+    }
+
+    .wrap-login {
+        width: 500px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        -webkit-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    .validate-input {
+        position: relative;
+    }
+
+    .wrap-input {
+        width: 70%;
+        background-color: white;
+        border-radius: 27px;
+        margin-left: 20%;
+        z-index: 1;
+    }
+
+    .m-b-16 {
+        margin-bottom: 16px;
+    }
+
+    div {
+        display: block;
+    }
+</style>
+
+<div class="container-login">
+    <div class="wrap-login" id="table">
+        <form class="form-horizontal" method="post">
+            <span class="login-title">
+                SIGN IN
+            </span>
+            <!-- /.card-header -->
+            <!-- form start -->
+            @if (msg != null)
+            {
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-8">
+                        <div class="alert alert-danger">
+                            <strong>@msg</strong>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="card-body">
+                <div class="form-group">
+                    <label asp-for="Email" class="col-sm-2 control-label">Email:</label>
+                    <div class="wrap-input validate-input m-b-16">
+                        <input asp-for="Email" id="Email" class="form-control" placeholder="Email address">
+                        <div class="has-error">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="col-sm-2 control-label">Password:</label>
+                    <div class="wrap-input validate-input m-b-16">
+                        <input asp-for="Password" id="Password" class="form-control" placeholder="Password">
+                        <div class="has-error">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="captchview">
+                    @{
+                        Html.RenderPartial("_Captcha", new CaptchaResult());
+                    }
+                </div>
+                <div class="col-sm-offset-2 col-sm-8" style="line-height:1.4; padding-bottom:5px;">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="remember">
+                        <label class="form-check-label" title="Remember me" for="remember">Remember me</label>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-8">
+                        <a asp-controller="Account" asp-action="ForgetPassword" title="Reset your password" tabindex="3">Forgot password?</a>
+                    </div>
+                </div>
+                @*<div id="captchview">
+                        @{
+                            Html.RenderPartial("_Captcha", new CaptchaResult());
+                        }
+                    </div>*@
+            </div>
+            <!-- /.card-body -->
+            <div class="container-login-form-btn col-sm-offset-2 col-sm-8">
+                <button input type="submit" title="Sign In" class="login-form-btn" value="SIGN IN">SIGN IN</button>
+            </div>
+            <div class="col-sm-offset-2 col-sm-8" style="line-height:1.4; padding-bottom:5px;">
+                <div class="has-text-centered register">
+                    <text>Not a member yet? </text><a href="/register" title="Register" tabindex="5">Register Now >></a>
+                </div>
+            </div>
+            <!-- /.card-footer -->
+        </form>
+    </div>
+</div>

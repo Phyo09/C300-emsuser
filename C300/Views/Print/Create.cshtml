@@ -1,0 +1,32 @@
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <h4>Output format:</h4>
+    <div class="form-check">
+        <input id="XLSX" name="SelectedFormat" type="radio" class="form-check-input" checked value="XLSX" />
+        <label for="XLSX" class="form-check-label">XLSX</label>
+    </div>
+    <div class="form-check">
+        <input id="XLS" name="SelectedFormat" type="radio" class="form-check-input" value="XLS" />
+        <label for="XLS" class="form-check-label">XLS</label>
+    </div>
+    <div class="form-check">
+        <input id="ODS" name="SelectedFormat" type="radio" class="form-check-input" value="ODS" />
+        <label for="ODS" class="form-check-label">ODS</label>
+    </div>
+    <div class="form-check">
+        <input id="CSV" name="SelectedFormat" type="radio" class="form-check-input" value="CSV" />
+        <label for="CSV" class="form-check-label">CSV</label>
+    </div>
+    <div class="form-check">
+        <input id="PDF" name="SelectedFormat" type="radio" class="form-check-input" value="PDF" />
+        <label for="PDF" class="form-check-label">PDF</label>
+    </div>
+    <hr />
+    <button type="submit" class="btn btn-default">Export</button>
+</form>

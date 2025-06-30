@@ -1,0 +1,250 @@
+@using C300.Models
+@model Preference
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<h2>Setting_t</h2>
+<span style="color:red">@TempData["Msg"]</span><br />
+<table class="table table-bordered table-condensed table-hover table-striped">
+    <tr>
+        <th>Type</th>
+        <th>Lowest</th>
+        <th>Highest</th>
+        <th>Notification</th>
+        <th>Action</th>
+    </tr>
+
+    <tr>
+        <td>Temperature</td>
+        <td>@Model.LowestTemp</td>
+        <td>@Model.HighestTemp</td>
+        <td><text>On</text></td>
+        <td>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editTemp"><b>Edit</b></button>
+        </td>
+    </tr>
+    <tr>
+        <td>Humidity</td>
+        <td>@Model.LowestHumidity</td>
+        <td>@Model.HighestHumidity</td>
+        <td><text>On</text></td>
+        <td>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editHum"><b>Edit</b></button>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Light</td>
+        <td>@Model.LowestLight</td>
+        <td>@Model.HighestLight</td>
+        <td><text>On</text></td>
+        <td>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editLight"><b>Edit</b></button>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Weight</td>
+        <td>@Model.LowestWeight</td>
+        <td>@Model.HighestWeight</td>
+        <td><text>On</text></td>
+        <td>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editWeight"><b>Edit</b></button>
+        </td>
+    </tr>
+
+</table>
+
+<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">
+    @*Temperature*@
+    <div class="modal fade" id="editTemp" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Temperature</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="LowestTemp">Lowest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="text"*@ class="form-control" asp-for="LowestTemp" value="@Model.LowestTemp" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="LowestTemp" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="HighestTemp">Highest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="email"*@ class="form-control" asp-for="HighestTemp" value="@Model.HighestTemp" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="HighestTemp" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                <input type="submit" value="Save" class="btn btn-info">
+                                <input type="reset" value="Reset" class="btn btn-default">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Humidity*@
+    <div class="modal fade" id="editHum" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Humidity</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="LowestHumidity">Lowest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="text"*@ class="form-control" asp-for="LowestHumidity" value="@Model.LowestHumidity" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="LowestHumidity" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="HighestHumidity">Highest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="email"*@ class="form-control" asp-for="HighestHumidity" value="@Model.HighestHumidity" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="HighestHumidity" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                <input type="submit" value="Save" class="btn btn-info">
+                                <input type="reset" value="Reset" class="btn btn-default">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Light*@
+    <div class="modal fade" id="editLight" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Light</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="LowestLight">Lowest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="text"*@ class="form-control" asp-for="LowestLight" value="@Model.LowestLight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="LowestLight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="HighestLight">Highest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="email"*@ class="form-control" asp-for="HighestLight" value="@Model.HighestLight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="HighestLight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                <input type="submit" value="Save" class="btn btn-info">
+                                <input type="reset" value="Reset" class="btn btn-default">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Weight*@
+    <div class="modal fade" id="editWeight" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="text-primary">Weight</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="LowestWeight">Lowest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="text"*@ class="form-control" asp-for="LowestWeight" value="@Model.LowestWeight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="LowestWeight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3" asp-for="HighestWeight">Highest:</label>
+                            <div class="col-sm-9">
+                                <input @*type="email"*@ class="form-control" asp-for="HighestWeight" value="@Model.HighestWeight" placeholder="Please Enter Your Value" />
+                                <div class="has-error">
+                                    <span asp-validation-for="HighestWeight" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                <input type="submit" value="Save" class="btn btn-info">
+                                <input type="reset" value="Reset" class="btn btn-default">
+                            </div>
+                        </div>
+                        @*</form>*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

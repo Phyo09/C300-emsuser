@@ -1,0 +1,65 @@
+@model ResetPasswordModel
+
+@{
+
+    string msg = ViewData["Msg"] as string;
+}
+
+<style>
+    h1 {
+        font-weight: bold;
+        /*font-size: 10vw*/
+    }
+</style>
+
+
+
+<h1 style="text-align:center">Reset Password</h1>
+<p style="text-align:center">Please enter a new Password </p>
+<br />
+
+<form asp-controller="Account" asp-action="Reset" method="post" class="form-horizontal" role="form">
+    <div class="form-horizontal">
+        @if (msg != null)
+        {
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-4">
+                    <div class="alert alert-danger">
+                        <strong>@msg</strong>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="form-group">
+            <label asp-for="NewPassword" class="col-sm-3 control-label">New Password </label>
+            <div class="col-sm-6">
+                <input asp-for="NewPassword" class="form-control" />
+            </div>
+            <div class="has-error col-sm-3">
+                <span asp-validation-for="NewPassword" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ConfirmPassword" class="col-sm-3 control-label">Confirm Password </label>
+            <div class="col-sm-6">
+                <input asp-for="ConfirmPassword" class="form-control" />
+            </div>
+            <div class="has-error col-sm-3">
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.HiddenFor(c => c.ResetCode)
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-6">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+
+            </div>
+        </div>
+    </div>
+</form>

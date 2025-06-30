@@ -1,0 +1,300 @@
+@model List<Temperature>
+    @{
+        double high = Convert.ToDouble(ViewData["High"]);
+        double low = Convert.ToDouble(ViewData["Low"]);
+        //Console.WriteLine(high);
+    }
+
+
+    @section ScriptSection {
+        <link href="~/lib/styles/jquery.dataTables.min.css" rel="stylesheet" />
+        <script src="~/lib/scripts/jquery.dataTables.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+
+                //Dynamic
+                var interval = $("#ddlinterval").val();
+                var device = "temp";
+                var status = "on";
+
+                $('#btnResume').hide();
+
+                var dynamic = new Chart(document.getElementById("dynamicID"), {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', '', '', '', '', '', ''],
+                        datasets: [{
+                            label: 'Temperature',
+                            backgroundColor: "red",
+                            borderColor: "red",
+                            fill: false,
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: true,
+                            text: 'Progressive Line Graph of Temperature'
+                        }
+                    }
+                });
+
+                $.ajaxSetup({ cache: false });
+                timer = setInterval(AjaxAddDataTemp, interval);
+
+                function AjaxLoadInterval() {
+                    clearInterval(timer)
+                    interval = $("#ddlinterval").val();
+                    if (status == "on") {
+                        if (device == "temp") {
+                            timer = setInterval(AjaxAddDataTemp, interval);
+                        }
+                        //else if (device == "hum") {
+                        //    timer = setInterval(AjaxAddDataHum, interval);
+                        //}
+                        //else if (device == "light") {
+                        //    timer = setInterval(AjaxAddDataLight, interval);
+                        //}
+                        //else if (device == "weight") {
+                        //    timer = setInterval(AjaxAddDataWeight, interval);
+                        //}
+
+                    }
+                    //else if (status == "off") {
+                    //    interval = $("#ddlinterval").val();
+                    //}
+
+                    //mychart.update();
+                    //console.log(interval)
+                }
+                $("#ddlinterval").change(AjaxLoadInterval);
+
+                $('#btnStop').click(function () {
+                    clearInterval(timer)
+                    status = "off";
+                    $('#btnResume').show();
+                    $('#btnStop').hide();
+                });
+                $('#btnResume').click(function () {
+                    clearInterval(timer)
+                    if (device == "temp") {
+                        timer = setInterval(AjaxAddDataTemp, interval);
+                    }
+                    //else if (device == "hum") {
+                    //    timer = setInterval(AjaxAddDataHum, interval);
+                    //}
+                    //else if (device == "light") {
+                    //    timer = setInterval(AjaxAddDataLight, interval);
+                    //}
+                    //else if (device == "weight") {
+                    //    timer = setInterval(AjaxAddDataWeight, interval);
+                    //}
+                    status = "on";
+                    $('#btnResume').hide();
+                    $('#btnStop').show();
+                });
+
+                $('#btnRefresh').click(function () {
+                    clearInterval(timer)
+                    dynamic.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    dynamic.data.labels = ['', '', '', '', '', '', '', '', '', '']
+                    if (device == "temp") {
+                        timer = setInterval(AjaxAddDataTemp, interval);
+                    }
+                    //else if (device == "hum") {
+                    //    timer = setInterval(AjaxAddDataHum, interval);
+                    //}
+                    //else if (device == "light") {
+                    //    timer = setInterval(AjaxAddDataLight, interval);
+                    //}
+                    //else if (device == "weight") {
+                    //    timer = setInterval(AjaxAddDataWeight, interval);
+                    //}
+                });
+
+                function AjaxAddDataTemp() {
+                    $.getJSON(
+                        "/Progressive/GetDataTemp",
+                        function (data) {
+                            dynamic.data.datasets[0].data.push(data);
+                            //console.log(data);
+                            dynamic.update();
+                        }
+                    );
+                    $.getJSON(
+                        "/Progressive/GetDataTempTime",
+                        function (test) {
+                            dynamic.data.labels.push(test);
+                            dynamic.update();
+                        }
+                    );
+                }
+
+                //Table
+                $('#JSEmpTable').DataTable({
+                    ordering: true,
+                    paging: true,
+                    searching: true,
+                    info: true,
+                    lengthChange: true,
+                    pageLength: 10
+                });
+
+
+                //VBar
+                var vbar = new Chart(document.getElementById("vbarID"), {
+            type: "bar",
+            data: {
+               labels: @Json.Serialize(ViewData["date"]),
+               datasets:
+               [
+                   {
+                       label: "Temperature",
+                       fill: false,
+                       borderColor: "red",
+                       backgroundColor: "red",
+                       data: @Json.Serialize(ViewData["model"])
+                   }
+               ]
+            },
+            options:
+            {
+               responsive: true,
+               legend: {
+                  display: true
+               },
+               title: {
+                  display: true,
+                  text: '@ViewData["Title"]'
+               }
+            }
+          });
+            });
+        </script>
+
+    }
+
+    <h2>Template</h2>
+    <div class="container">
+        <br />
+        <div class="tabbable responsive table-bordered">
+            <ul class="nav nav-tabs ">
+                <li class="active" style="width:20%"><a href="#tab1" data-toggle="tab"><b><u>Dynamic</u></b></a></li>
+                <li style="width:20%"><a href="#tab2" data-toggle="tab"><b><u>Table</u></b></a></li>
+                <li style="width:20%"><a href="#tab3" data-toggle="tab"><b><u>Vertical Bar</u></b></a></li>
+                <li style="width:20%"><a href="#tab4" data-toggle="tab"><b><u>Horizontal Bar</u></b></a></li>
+                <li style="width:20%"><a href="#tab5" data-toggle="tab"><b><u>Line</u></b></a></li>
+            </ul> @*end of tab labels*@
+
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="tab1">
+                    <br />
+                    <div class="container">
+                        <div class="col-sm-8" style="width:65%;height:20%;margin-left:10%">
+                            <canvas id="dynamicID" width="75" height="50"></canvas>
+                        </div>
+                        <div class="col-sm-offset-1 col-sm-1">
+                            <div class="form-group">
+                                <label>Interval: </label>
+                                <div>
+                                    <select id="ddlinterval">
+                                        <option value="2000">2 sec</option>
+                                        <option value="5000">5 sec</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <button id="btnStop">Stop</button>
+                                </div>
+                                <div>
+                                    <button id="btnResume">Resume</button>
+                                </div>
+                                <div>
+                                    <button id="btnRefresh">Refresh</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div> @*end of tab1 content*@
+
+                <div class="tab-pane fade in" id="tab2">
+                    <br />
+                    <table id="JSEmpTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Temperature</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Temperature poke in Model)
+                            {
+                                <tr>
+                                    <td>@poke.TemperatureId</td>
+                                    @if (Convert.ToDouble(poke.TLevel) >= high)
+                                    {
+                                        <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel)))</td>
+                                    }
+                                    else if (Convert.ToDouble(poke.TLevel) < high && Convert.ToDouble(poke.TLevel) > low)
+                                    {
+                                        <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel)))</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel)))</td>
+                                    }
+                                    @*<td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel)))</td>*@
+                                    <td>@(poke.TDatetime.ToString("dd-MM-yyyy hh:mm:ss tt"))</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>ID</th>
+                                <th>Temperature</th>
+                                <th>Date</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div> @*end of tab2 content*@
+
+                <div class="tab-pane fade in" id="tab3">
+                    <br />
+                    <div class="container">
+                        <div class="col-sm-8" style="width:65%;height:20%;margin-left:10%">
+                            <canvas id="vbarID" width="75" height="50"></canvas>
+                        </div> @*end of tab3 content*@
+                    </div>
+                </div>
+
+                <div class="tab-pane fade in" id="tab4">
+                    <br />
+                    <p class="text-center">
+                        If you need a complete guide for our website,<br />you can download the user guide using the link below. <br /><br />
+                        <br /><a>CLICK HERE TO DOWNLOAD </a> <i class="glyphicon glyphicon-cloud-download" style="font-size: 30px"></i><br /><br />
+                        Ensure that you have a PDF reader to view the user guide.<br /><br />
+                        <a href="https://adobe-reader.en.softonic.com/download">DOWNLOAD PDF READER</a>
+                    </p> @*end of tab4 content*@
+                </div>
+
+                <div class="tab-pane fade in" id="tab5">
+                    <br />
+                    <p class="text-center">
+                        If you need a complete guide for our website,<br />you can download the user guide using the link below. <br /><br />
+                        <br /><a>CLICK HERE TO DOWNLOAD </a> <i class="glyphicon glyphicon-cloud-download" style="font-size: 30px"></i><br /><br />
+                        Ensure that you have a PDF reader to view the user guide.<br /><br />
+                        <a href="https://adobe-reader.en.softonic.com/download">DOWNLOAD PDF READER</a>
+                    </p> @*end of tab5 content*@
+                </div>
+            </div> <!-- /tab-content -->
+        </div> <!-- /tabbable -->
+    </div>
+

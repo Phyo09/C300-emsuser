@@ -1,0 +1,184 @@
+@model Contact
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .square {
+        width: 300px;
+        height: 200px;
+        Background-color: lightskyblue
+    }
+
+    body {
+        color: #333;
+        background-color: white;
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+
+
+    ::-moz-placeholder {
+        color: #fff;
+        font-weight: 300;
+        opacity: 1;
+    }
+
+
+
+    /* contact from design */
+    .container {
+        padding: 10px 50px 70px;
+    }
+
+    .title1 {
+        text-align: center;
+    }
+
+        .title1 h1 {
+            font-size: 60px;
+            margin: 25px;
+            color: red;
+            font-weight: 500;
+        }
+
+    .sec2 {
+        position: relative;
+    }
+
+        .sec2 .contactform {
+            position: absolute;
+            top: 0;
+            right: 4%;
+            z-index: 99;
+            background: #393939;
+            padding: 30px 40px 70px;
+            box-sizing: border-box;
+            height: 500px;
+        }
+
+    input.form-fields,
+    .form-fields, textarea.form-fields {
+        padding: 0 0 0 40px;
+        display: block;
+        box-sizing: border-box;
+        width: 300px;
+        font-size: 14px;
+        background: #323232;
+        margin: 7px 0;
+        border: 1px solid #00C1A8;
+        color: #6BECDB;
+        opacity: 0.6;
+        min-height: 45px;
+        position: relative;
+    }
+
+    textarea.form-fields {
+        padding: 8px 40px;
+    }
+
+    button.form-fields.button {
+        color: #16F1D4;
+        font-size: 14px;
+        padding: 0px;
+    }
+
+        button.form-fields.button:hover {
+            background: #00C1A8;
+            color: #fff;
+            cursor: pointer;
+        }
+
+    #map {
+        height: 500px;
+        width: 60%;
+    }
+
+    button.form-fields.button i {
+        margin-left: 10px;
+    }
+
+    h5 {
+        color: #16F1D4;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .lab {
+        color: #00C1A8;
+        padding: 14px;
+        position: absolute;
+        z-index: 99;
+    }
+</style>
+<span style="color:red">@TempData["Msg"]</span><br />
+<body>
+    <div class="container">
+        <section class="sec1">
+            <div class="title1">
+                <h1>CONTACT US</h1>
+            </div>
+        </section>
+        <section class="sec2">
+            <div class="contactform">
+                <h5>Submit Query</h5>
+                <form asp-controller="Home" asp-action="Contact" method="post" id="com">
+
+                    <label for="email">
+                        <i class="lab fa fa-envelope"></i>
+                        <input name="Email" asp-for="Email" class="form-fields" placeholder="Email" type="text">
+                    </label>
+
+                    <label for="textarea">
+                        <i class="lab fa fa-comment"></i>
+                        <input class="form-fields" asp-for="Description" placeholder="Queries?" name="Description">
+                    </label>
+                    <button class="form-fields button" id="contact" type="submit" asp-action="Contact" asp-controller="Home">Submit <i class="fa fa-envelope"></i></button>
+                </form>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <a href="#" style="font-size:20px"><u>Give Detailed Feedback</u></a>
+            </div>
+            <div id="map"></div>
+            <script>
+
+                function initMap() {
+
+                    var uluru = { lat: 1.443389200, lng: 103.785480400 };
+
+                    var map = new google.maps.Map(
+                        document.getElementById('map'), { zoom: 14, center: uluru });
+
+                    var marker = new google.maps.Marker({ position: uluru, map: map });
+                }
+            </script>
+            <script async defer
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmoXnVS7xlQF3CpZ1kbJvh2NiELeTP9iM&callback=initMap">
+            </script>
+
+        </section>
+        <br />
+        <br />
+        <div class="square">
+            <span style="color:Black;font-size:30px;font:bolder;font:bold">Contact Details:</span>
+            <br />
+            <br />
+            <br />
+            <b> Venue</b>-Republic Polytechnice,Woodlands Avenue 9,Singapore
+            <br />
+            <br />
+            <br />
+
+            <b> Phone</b>-XXXXXXXXXXX
+            <br />
+            <br />
+            <br />
+            <b> Email</b>-rp.edu.sg
+            <br />
+        </div>
+    </div>
+</body>
+

@@ -1,0 +1,1003 @@
+@*@model List<Temperature>*@
+@{
+    //ViewData["Title"] = "Sort";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    double high = Convert.ToDouble(ViewData["High"]);
+    double low = Convert.ToDouble(ViewData["Low"]);
+    var id = Convert.ToInt32(ViewData["id"]);
+    var type = ViewData["type"] as String;
+    var year = ViewData["Year"] as List<dynamic>;
+    var pre = ViewData["preference"] as Preference;
+    var update = ViewData["update"];
+    var unit = ViewData["unit"] as string;
+    year.Insert(0, new { value = "", text = "Year" });
+    dynamic Model = null;
+    if (id == 1)
+    {
+        Model = ViewData["Model"] as List<Temperature>;
+    }
+    else if (id == 2)
+    {
+        Model = ViewData["Model"] as List<Humidity>;
+    }
+    else if (id == 3)
+    {
+        Model = ViewData["Model"] as List<Light>;
+    }
+    else if (id == 4)
+    {
+        Model = ViewData["Model"] as List<Weight>;
+    }
+
+    //Console.WriteLine(high);
+}
+
+@section ScriptSection {
+    <link href="~/lib/styles/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="~/lib/scripts/jquery.dataTables.min.js"></script>
+    @*<script src="~/lib/scripts/dataTables.bootstrap.min.js"></script>*@
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+            $('#JSEmpTable').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: true,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                lengthMenu: [[5,10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                dom: '<"top"i>rt<"bottom"lp>',
+                //dom: '<"top"i>rt<"bottom"flp><"clear">',
+                //buttons: ['pageLength']
+                // i --> info
+                //l --> lengthChange
+                //p --> paging
+                //t --> table
+                //r --> processing
+
+            });
+            $(".dataTables_length select").css('width', '60px'); /*bootstrap pagelength*/
+
+            //Year
+            $('#ddlYear').change(SetMonth);
+            function SetMonth() {
+                var year = $('#ddlYear').val();
+                var apiUrl = "/api/Past/Year/" +@id+"/"+ year; /*setMonth dropdown*/
+                var ajaxUrl = "/api/Past/GetByYear/" + @id+"/" + year; /*retrieve data table*/
+                $('#ddlMonth').html("<option selected='selected' value=''>Month</option>");
+                $.getJSON(apiUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        $('#ddlMonth').append("<option value='" + field + "'>" + field + "</option>")
+                    });
+                });
+                var bb = '';
+                $.getJSON(ajaxUrl, function (result) {
+                        $.each(result, function (i, field) {
+                            //field = JSON.parse(field);
+                            bb += '<tr><td>' + field.id + '</td>';
+                            if (field.level >= @high){
+                                bb += '<td style="color:red">' + field.level + ' @unit  </td>';
+                            }
+                            else if (field.lLevel <= @low){
+                                bb += '<td style="color:blue">' + field.level + ' @unit  </td>';
+                            }
+                            else {
+                                bb += '<td style="color:green">' + field.level + ' @unit  </td>';
+                            }
+
+                            bb += '<td>' + field.datetime + '</td></tr>';
+
+                        });
+                        $('#bb').html(bb);
+                    });
+
+            }
+
+            //Month
+            $('#ddlMonth').change(SetDay);
+            function SetDay() {
+                var year = $('#ddlYear').val();
+                var month = $('#ddlMonth').val();
+                var apiUrl = "/api/Past/Month/" +@id+"/" + year + "/" + month; /*setday dropdown*/
+                var ajaxUrl = "/api/Past/GetByMonth/" + @id+"/" + year + "/" + month; /*retrieve data table*/
+                //load(ajaxUrl);
+                var bb = '';
+                $.getJSON(ajaxUrl, function (result) {
+                        $.each(result, function (i, field) {
+                            //field = JSON.parse(field);
+                            bb += '<tr><td>' + field.id + '</td>';
+                            if (field.level >= @high){
+                                bb += '<td style="color:red">' + field.level + ' @unit</td>';
+                            }
+                            else if (field.lLevel <= @low){
+                                bb += '<td style="color:blue">' + field.level + ' @unit</td>';
+                            }
+                            else {
+                                bb += '<td style="color:green">' + field.level + ' @unit</td>';
+                            }
+
+                            bb += '<td>' + field.datetime + '</td></tr>';
+
+                        });
+                        $('#bb').html(bb);
+                    });
+
+                $('#ddlDay').html("<option selected='selected' value=''>Day</option>");
+                $.getJSON(apiUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        console.log(field)
+                        $('#ddlDay').append("<option value='" + field + "'>" + field + "</option>")
+                    });
+                });
+            }
+
+            //Day
+            $('#ddlDay').change(GetByDay);
+            function GetByDay() {
+                var year = $('#ddlYear').val();
+                var month = $('#ddlMonth').val();
+                var day = $('#ddlDay').val();
+                var ajaxUrl = "/api/Past/GetByDay/" + @id+"/" + year + "/" + month + "/" + day; /*retrieve data table*/
+                //load(ajaxUrl);
+                var bb = '';
+                $.getJSON(ajaxUrl, function (result) {
+                        $.each(result, function (i, field) {
+                            bb += '<tr><td>' + field.id + '</td>';
+                            if (field.level >= @high){
+                                bb += '<td style="color:red">' + field.level + ' @unit</td>';
+                            }
+                            else if (field.lLevel <= @low){
+                                bb += '<td style="color:blue">' + field.level + ' @unit</td>';
+                            }
+                            else {
+                                bb += '<td style="color:green">' + field.level + ' @unit</td>';
+                            }
+                            bb += '<td>' + field.datetime + '</td></tr>';
+
+                        });
+                        $('#bb').html(bb);
+                    });
+
+            }
+
+
+           //Customise
+            $('#btnCustomise').show();
+            $('#btnOk').hide();
+            $('#btnCancel').hide();
+            $('#customize').hide();
+
+            $('#start').datetimepicker({ format: 'DD-MMM-YYYY hh:mm:ss A' });
+            $('#end').datetimepicker({ format: 'DD-MMM-YYYY hh:mm:ss A', maxDate: $.now()});
+            //$('#end').datetimepicker({ format: 'DD-MM-YYYY hh:mm:ss A', useCurrent: false });
+            $("#start").on("dp.change", function (e) {
+                $('#end').data("DateTimePicker").minDate(e.date);
+            });
+            $("#end").on("dp.change", function (e) {
+                $('#start').data("DateTimePicker").maxDate(e.date);
+            });
+
+            $('#btnCustomise').click(function () {
+                $('#btnCustomise').hide();
+                $('#btnOk').show();
+                $('#btnCancel').show();
+                $('#customize').show();
+            });
+            $('#btnCancel').click(function () {
+                $('#btnCustomise').show();
+                $('#btnOk').hide();
+                $('#btnCancel').hide();
+                $('#customize').hide();
+            });
+            $('#btnOk').click(function () {
+                var start = $("#start1").val();
+                var end = $("#end1").val();
+                var ajaxUrl = "/api/Past/GetByDate/" + @id+"/" + start+"/"+end;
+                var bb = '';
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                            bb += '<tr><td>' + field.id + '</td>';
+                            if (field.level >= @high){
+                                bb += '<td style="color:red">' + field.level + ' @unit</td>';
+                            }
+                            else if (field.lLevel <= @low){
+                                bb += '<td style="color:blue">' + field.level + ' @unit</td>';
+                            }
+                            else {
+                                bb += '<td style="color:green">' + field.level + ' @unit</td>';
+                            }
+                            bb += '<td>' + field.datetime + '</td></tr>';
+                        });
+                        $('#bb').html(bb);
+                    });
+            });
+
+            //Searching
+            var searchId = 1;
+            $('#rdAll').click(function () {
+                searchId = 1;
+                SearchByAll();
+            });
+            $('#rdId').click(function () {
+                searchId = 2;
+                SearchById();
+            });
+            $('#rdValue').click(function () {
+                searchId = 3;
+                SearchByValue();
+            });
+            $('#rdDateTime').click(function () {
+                searchId = 4;
+                SearchByDate();
+            });
+
+            $("#txtSearch").keyup(function (){
+                if (searchId == 1) {
+                    SearchByAll();
+                }
+                else if (searchId == 2) {
+                    SearchById($("#txtSearch").val());
+                }
+                else if (searchId == 3) {
+                    SearchByValue();
+                    console.log(searchId)
+                }
+                else if (searchId == 4) {
+                    SearchByDate();
+                    console.log(searchId)
+                }
+            });
+
+
+            $('#btnSearch').click(function () {
+
+                if (searchId == 1) {
+                    SearchByAll();
+                }
+                else if (searchId == 2) {
+                    SearchById();
+                }
+                else if (searchId == 3) {
+                    SearchByValue();
+                    console.log(searchId)
+                }
+                else if (searchId == 4) {
+                    SearchByDate();
+                    console.log(searchId)
+                }
+            });
+
+            function SearchByAll() {
+                var search, table, tr, td, i;
+                search = document.getElementById("txtSearch").value.toLowerCase();
+                table = document.getElementById("JSEmpTable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+                    td1 = tr[i].getElementsByTagName("td")[1];
+                    td2 = tr[i].getElementsByTagName("td")[2];
+
+                    if (td, td1, td2) {
+                        if (td.innerHTML.toLowerCase().indexOf(search) > -1 | td1.innerHTML.toLowerCase().indexOf(search) > -1 | td2.innerHTML.toLowerCase().indexOf(search) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "None"
+                        }
+                    }
+                }
+            }
+            function SearchById(name) {
+                var search, table, tr, td, i;
+                search = document.getElementById("txtSearch").value.toLowerCase();
+                table = document.getElementById("JSEmpTable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+
+                    if (td) {
+                        if (td.innerHTML.toLowerCase().indexOf(search) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "None"
+                        }
+                    }
+                }
+                //var rex = new RegExp(name, 'i');
+                //$('.search tr ').hide();
+
+                //$('.search tr ').filter(function (i, v) {
+                //    var $t = $(this).children(":eq(" + "0" + ")");
+                //    return rex.test($t.text());
+                //}).show();
+            }
+            function SearchByValue() {
+                var search, table, tr, td, i;
+                search = document.getElementById("txtSearch").value.toLowerCase();
+                table = document.getElementById("JSEmpTable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td1 = tr[i].getElementsByTagName("td")[1];
+
+                    if (td1) {
+                        if (td1.innerHTML.toLowerCase().indexOf(search) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "None"
+                        }
+                    }
+                }
+            }
+            function SearchByDate() {
+                var search, table, tr, td, i;
+                search = document.getElementById("txtSearch").value.toLowerCase();
+                table = document.getElementById("JSEmpTable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td2 = tr[i].getElementsByTagName("td")[2];
+
+                    if (td2) {
+                        if (td2.innerHTML.toLowerCase().indexOf(search) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "None"
+                        }
+                    }
+                }
+            }
+
+            //Export
+            
+            //var id = 1
+            ////data type
+            //$("#1").click(function () {
+            //    id = 1;
+            //});
+            //$("#2").click(function () {
+            //    id = 2;
+            //});
+            //$("#3").click(function () {
+            //    id = 3;
+            //});
+            //$("#4").click(function () {
+            //    id = 4;
+            //});
+            //$("#5").click(function () {
+            //    id = 5;
+            //});
+            //$("#6").click(function () {
+            //    id = 6;
+            //});
+            var format = "XLSX"
+            $("#XLSX").click(function () {
+                format = "XLSX";
+            });
+            $("#XLS").click(function () {
+                format = "XLS";
+            }); $("#ODS").click(function () {
+                format = "ODS";
+            }); $("#CSV").click(function () {
+                format = "CSV";
+            }); $("#PDF").click(function () {
+                format = "PDF";
+            });
+            $("#btnExport").click(function () {
+                $(this).attr("href", "/Print/Test/" + format + "/" + @id);
+                //$("#exportType").fadeOut('slow');
+                $("#exportType").modal("hide")
+            });
+
+            //Sorting
+            @*var idAsc = true;
+            $('#id').click(function () {
+                console.log('click')
+                if (idAsc == true) {
+                    idAsc = false;
+                    console.log(idAsc)
+                }
+                else {
+                    idAsc = true;
+                }
+                var ajaxUrl = "/api/Past/Sort/Id/" + @id+"/" + idAsc ;
+                var bb = '';
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+
+                            bb += '<tr><td>' + field.id + '</td>';
+                            if (field.level >= @high){
+                                bb += '<td style="color:red">' + field.level + '</td>';
+                            }
+                            else if (field.lLevel <= @low){
+                                bb += '<td style="color:blue">' + field.level + '</td>';
+                            }
+                            else {
+                                bb += '<td style="color:green">' + field.level + '</td>';
+                            }
+                            bb += '<td>' + field.datetime + '</td></tr>';
+                    });
+                    $('#bb').html(bb);
+                });
+            });
+
+            var typeAsc = true;
+            $('#type').click(function () {
+                console.log('click')
+                if (typeAsc == true) {
+                    typeAsc = false;
+                }
+                else {
+                    typeAsc = true;
+                }
+                var ajaxUrl = "/api/Past/Sort/Level/" + @id+"/" + typeAsc ;
+                var bb = '';
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+
+                            bb += '<tr><td>' + field.id + '</td>';
+                            if (field.level >= @high){
+                                bb += '<td style="color:red">' + field.level + '</td>';
+                            }
+                            else if (field.lLevel <= @low){
+                                bb += '<td style="color:blue">' + field.level + '</td>';
+                            }
+                            else {
+                                bb += '<td style="color:green">' + field.level + '</td>';
+                            }
+                            bb += '<td>' + field.datetime + '</td></tr>';
+                    });
+                    $('#bb').html(bb);
+                });
+            });
+
+            var dateAsc = true;
+            $('#date').click(function () {
+                console.log('click')
+                if (dateAsc == true) {
+                    dateAsc = false;
+                }
+                else {
+                    dateAsc = true;
+                }
+                var ajaxUrl = "/api/Past/Sort/Date/" + @id+"/" + dateAsc ;
+                var bb = '';
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+
+                            bb += '<tr><td>' + field.id + '</td>';
+                            if (field.level >= @high){
+                                bb += '<td style="color:red">' + field.level + '</td>';
+                            }
+                            else if (field.lLevel <= @low){
+                                bb += '<td style="color:blue">' + field.level + '</td>';
+                            }
+                            else {
+                                bb += '<td style="color:green">' + field.level + '</td>';
+                            }
+                            bb += '<td>' + field.datetime + '</td></tr>';
+                    });
+                    $('#bb').html(bb);
+                });
+            });*@
+
+
+            //// Add active class to the current button (highlight it)
+            //var header = document.getElementById("myDIV");
+            //var btns = header.getElementsByClassName("btn");
+            //for (var i = 0; i < btns.length; i++) {
+            //    btns[i].addEventListener("click", function () {
+            //        console.log(1)
+            //        var current = document.getElementsByClassName("active");
+            //        current[0].className = current[0].className.replace(" active", "");
+            //        this.className += " active";
+            //    });
+            //}
+
+            //notification
+            @*$.ajaxSetup({ cache: false });
+                timer = setInterval(AjaxCheck, "5000");
+                function AjaxCheck() {
+                    $.getJSON(
+                        "/Notification/Temperature",
+                        function (data) {
+                            console.log(data)
+                            if (data > @pre.HighestTemp){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The temperature is over " + @pre.HighestTemp + ". The current temperature is " + data)
+                            }
+                            else if (data < @pre.LowestTemp){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The temperature is below " + @pre.LowestTemp + ". The current temperature is " + data)
+                            }
+
+                        }
+                    );
+                    $.getJSON(
+                        "/Notification/Humidity",
+                        function (data) {
+                            console.log(data)
+                            if (data > @pre.HighestHumidity){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The humidity is over " + @pre.HighestHumidity + ". The current humidity is " + data)
+                            }
+                            else if (data < @pre.LowestHumidity){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The humidity is below " + @pre.LowestHumidity + ". The current humidity is " + data)
+                            }
+
+                        }
+                    );
+                    $.getJSON(
+                        "/Notification/Light",
+                        function (data) {
+                            console.log(data)
+                            if (data > @pre.HighestLight){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The light is over " + @pre.HighestLight + ". The current light is " + data)
+                            }
+                            else if (data < @pre.LowestLight){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The light is below " + @pre.LowestLight + ". The current light is " + data)
+                            }
+
+                        }
+                    );
+                    $.getJSON(
+                        "/Notification/Weight",
+                        function (data) {
+                            if (data > @pre.HighestWeight){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The force is over " + @pre.HighestWeight + ". The current force is " + data)
+                            }
+                            else if (data < @pre.LowestWeight){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The force is below " + @pre.LowestWeight+ ". The current force is " + data)
+                            }
+
+                        }
+                    );
+                }*@
+
+        });
+    </script>
+}
+@*<script>
+        // Add active class to the current button (highlight it)
+        var header = document.getElementById("myDIV");
+        var btns = header.getElementsByClassName("btn");
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].addEventListener("click", function () {
+                console.log(3)
+                var current = document.getElementsByClassName("active");
+                current[0].className = current[0].className.replace(" active", "");
+                this.className += " active";
+            });
+        }
+    </script>*@
+
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: Verdana;
+        font-size: small
+    }
+
+    /*dynamic,table, vertical,horizontal,line*/
+    .btn {
+        /*color: #111;*/
+        /*background-color: #00C851;*/ /*active--> green*/
+        color: #6b6d6d;
+        background-color: #d6d4d4;
+        width: 100%;
+        font-family: Verdana;
+        font-size: small;
+        font-size-adjust: initial;
+        border-radius: 15px;
+    }
+        /* Style the active class, and buttons on mouse-over */
+        .btn:hover {
+            background-color: #00C851;
+            color: white;
+        }
+
+    .active {
+        background-color: #00C851;
+        color: white;
+    }
+
+    /*customize,search*/
+    .btn-info {
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: #0889B2;
+        color: white;
+        font-size: small;
+    }
+    
+    .heading {
+        color: white;
+        font-size: small;
+        font-family: Verdana;
+        background-color: #0889B2;
+    }
+    td {
+        font-size: small;
+        font-family: Verdana;
+    }
+    .radioSearch {
+        color:#00C851;
+        margin-right:7%
+    }
+    .cancel {
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: white;
+        color: #00C851;
+        border-color: #00C851;
+        font-size: small;
+    }
+    .print {
+        background-color: #00C851;
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        color: white;
+        font-size: small;
+    }
+    .text-primary {
+        color: #00C851;
+    }
+</style>
+
+
+<div class="container">
+
+    @*dynamic,table, vertical,horizontal,line*@
+    <div class="col-sm-11" id="myDIV">
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Live" asp-controller="Progressive" asp-route-id="@id">Dynamic</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Table" asp-controller="PastHistory" asp-route-id="@id">Table</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="1">Vertical Bar</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="2">Horizontal Bar</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="3">Line</a>
+        </div>
+        <div class="col-sm-2">
+            <button style="border-radius:15px;padding:18px 18px;margin-left:10%" type="button" class="btn-info edit col-sm-offset-3" data-toggle="modal" data-target="#exportType">Export</button>
+        </div>
+    </div>
+
+    @*Year,Month,Day*@
+    <div class="col-sm-12" style="background-color:#f2f2f2;margin-left:3%">
+        @*#edeaea*@
+        <div style="margin-top:2%">
+            <select class="col-sm-1" style="margin-right:2%;width:10%" id="ddlYear">
+                @foreach (var item in year)
+            {
+                <option value="@item.value">@item.text</option>
+                }
+            </select>
+
+            <select class="col-sm-1" style="margin-right:3%;width:10%" id="ddlMonth">
+                <option value="">Month</option>
+            </select>
+
+            <select class="col-sm-1" style="margin-right:3%;width:10%" id="ddlDay">
+                <option value="">Day</option>
+            </select>
+            <button id="btnCustomise" class="btn-info" style="padding: 8px 24px;border-radius: 15px;">Customise</button>
+        </div>
+    </div>
+    
+    @*Customize*@
+    <div id="customize" class="col-sm-11" style="background-color:#edeaea">
+        <div class="form-group" style="margin-top:2%">
+            <label class="control-label col-sm-2" style="color:#00C851"><b>Start Date:</b> </label>
+            <div class="col-sm-10">
+                <div class='input-group date' id='start'>
+                    <input id="start1" placeholder="DD-MM-YYYY hh:mm:ss tt" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" style="color:#00C851"><b>End Date:</b></label>
+            <div class="col-sm-10">
+                <div class='input-group date' id='end'>
+                    <input id="end1" class="form-control" placeholder="DD-MM-YYYY hh:mm:ss tt" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-8 col-sm-4" style="margin-top:2%">
+                <button id="btnOk" style="padding: 8px 24px;border-radius: 15px;margin-left:10%">OK</button>
+                <button id="btnCancel" style="padding: 8px 24px;border-radius: 15px;margin-left:5%">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    @*Search*@
+    <div class="container col-sm-12">
+        <div class="col-sm-6">
+            <label for="txtSearch" class="col-sm-4" style="color:#00C851;margin-top:2%"><b>Search for:</b></label>
+            <div class="input-group col-sm-8">
+                <input id="txtSearch" type="text" style="border-radius: 15px">
+                <span class="input-group-btn">
+                    <button id="btnSearch" class="btn-info" type="submit" style="border-radius:15px;padding:8px 8px;margin-left:10%">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+        <div class="col-sm-6" style="margin-top:1%">
+            <input checked="checked" id="rbAll" name="Gender" type="radio" /><b class="radioSearch"> All</b>
+            <input id="rdId" name="Gender" type="radio" /><b class="radioSearch" style="margin-right:7%"> ID</b>
+            <input id="rdValue" name="Gender" type="radio" /><b class="radioSearch" style="margin-right:7%"> @type</b>
+            <input id="rdDateTime" name="Gender" type="radio" /><b class="radioSearch" style="margin-right:7%"> Date</b>
+        </div>
+    </div>
+
+    @*Table*@
+    <div class="contaier col-sm-11">
+        Last Updated: @update
+        <table id="JSEmpTable" class="table ">
+            <thead>
+                <tr>
+                    <th id="id" class="heading">ID</th>
+                    <th id="type" class="heading">@type</th>
+                    <th id="date" class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody id="bb" class="search">
+                @if (id == 1)
+            {
+                    @foreach (Temperature poke in Model)
+                {
+                        <tr>
+                            <td>@poke.TemperatureId</td>
+                            @if (Convert.ToDouble(poke.TLevel) >= high)
+                            {
+                                @if (unit == "'C")
+                                {
+                                    <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel))) @unit</td>
+                                }
+                                else if (unit == "K")
+                                {
+                                    <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel + 273.15))) @unit</td>
+                                }
+                                else if (unit == "'F")
+                                {
+                                    <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble((poke.TLevel * 1.8) + 32))) @unit</td>
+                                }
+
+
+                            }
+                            else if (Convert.ToDouble(poke.TLevel) < high && Convert.ToDouble(poke.TLevel) > low)
+                            {
+                                @if (unit == "'C")
+                                {
+                                    <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel))) @unit</td>
+                                }
+                                else if (unit == "K")
+                                {
+                                    <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel + 273.15))) @unit</td>
+                                }
+                                else if (unit == "'F")
+                                {
+                                    <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble((poke.TLevel * 1.8) + 32))) @unit</td>
+                                }
+                            }
+                            else
+                            {
+                               @if (unit == "'C")
+                               {
+                                <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel))) @unit</td>
+                               }
+                               else if (unit == "K")
+                               {
+                                <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel + 273.15))) @unit</td>
+                               }
+                               else if (unit == "'F")
+                               {
+                                <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble((poke.TLevel * 1.8) + 32))) @unit</td>
+                               }
+                            }
+                            @*<td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel)))</td>*@
+                            <td>@(poke.TDatetime.ToString("dd-MM-yyyy hh:mm:ss tt"))</td>
+                        </tr>
+                    }
+                }
+                else if (id == 2)
+                {
+                    @foreach (Humidity poke in Model)
+                {
+                        <tr>
+                            <td>@poke.HumidityId</td>
+                            @if (Convert.ToDouble(poke.HLevel) >= high)
+                            {
+                                <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.HLevel))) @unit</td>
+                            }
+                            else if (Convert.ToDouble(poke.HLevel) < high && Convert.ToDouble(poke.HLevel) > low)
+                            {
+                                <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.HLevel))) @unit</td>
+                            }
+                            else
+                            {
+                                <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.HLevel))) @unit</td>
+                            }
+                            @*<td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel)))</td>*@
+                            <td>@(poke.HDatetime.ToString("dd-MM-yyyy hh:mm:ss tt"))</td>
+                        </tr>
+                    }
+                }
+                else if (id == 3)
+                {
+                    @foreach (Light poke in Model)
+                {
+                        <tr>
+                            <td>@poke.LightId</td>
+                            @if (Convert.ToDouble(poke.LLevel) >= high)
+                            {
+                                <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.LLevel))) @unit</td>
+                            }
+                            else if (Convert.ToDouble(poke.LLevel) < high && Convert.ToDouble(poke.LLevel) > low)
+                            {
+                                <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.LLevel))) @unit</td>
+                            }
+                            else
+                            {
+                                <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.LLevel))) @unit</td>
+                            }
+                            @*<td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.TLevel)))</td>*@
+                            <td>@(poke.LDatetime.ToString("dd-MM-yyyy hh:mm:ss tt"))</td>
+                        </tr>
+                    }
+                }
+                else if (id == 4)
+                {
+                    @foreach (Weight poke in Model)
+                {
+                        <tr>
+                            <td>@poke.WeightId</td>
+                            @if (Convert.ToDouble(poke.WLevel) >= high)
+                            {
+                                @if (unit == "N")
+                                {
+                                    <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel))) @unit</td>
+                                }
+                                else if (unit == "g")
+                                {
+                                    <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 101.97))) @unit</td>
+                                }
+                                else if (unit == "kg")
+                                {
+                                    <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 0.101972))) @unit</td>
+                                }
+                                else if (unit == "lb")
+                                {
+                                    <td style="color:red">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 0.224809))) @unit</td>
+                                }
+
+                            }
+                            else if (Convert.ToDouble(poke.WLevel) < high && Convert.ToDouble(poke.WLevel) > low)
+                            {
+                                @if (unit == "N")
+                                {
+                                    <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel))) @unit</td>
+                                }
+                                else if (unit == "g")
+                                {
+                                    <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 101.97))) @unit</td>
+                                }
+                                else if (unit == "kg")
+                                {
+                                    <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 0.101972))) @unit</td>
+                                }
+                                else if (unit == "lb")
+                                {
+                                    <td style="color:green">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 0.224809))) @unit</td>
+                                }
+                            }
+                            else
+                            {
+                                @if (unit == "N")
+                                {
+                                    <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel))) @unit</td>
+                                }
+                                else if (unit == "g")
+                                {
+                                    <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 101.97))) @unit</td>
+                                }
+                                else if (unit == "kg")
+                                {
+                                    <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 0.101972))) @unit</td>
+                                }
+                                else if (unit == "lb")
+                                {
+                                    <td style="color:blue">@(String.Format("{0:0.00}", Convert.ToDouble(poke.WLevel * 0.224809))) @unit</td>
+                                }
+                            }
+                            <td>@(poke.WDatetime.ToString("dd-MM-yyyy hh:mm:ss tt"))</td>
+                        </tr>
+                    }
+                }
+
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">@type</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>
+<div class="modal fade" id="exportType" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="text-primary">Export</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                    <h4>Output format:</h4>
+                    <div class="form-check">
+                        <input id="XLSX" name="SelectedFormat" type="radio" class="form-check-input" checked value="XLSX" />
+                        <label for="XLSX" class="form-check-label">XLSX</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="XLS" name="SelectedFormat" type="radio" class="form-check-input" value="XLS" />
+                        <label for="XLS" class="form-check-label">XLS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="ODS" name="SelectedFormat" type="radio" class="form-check-input" value="ODS" />
+                        <label for="ODS" class="form-check-label">ODS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="CSV" name="SelectedFormat" type="radio" class="form-check-input" value="CSV" />
+                        <label for="CSV" class="form-check-label">CSV</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="PDF" name="SelectedFormat" type="radio" class="form-check-input" value="PDF" />
+                        <label for="PDF" class="form-check-label">PDF</label>
+                    </div>
+
+                    @*</form>*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#"  id="btnExport" type="button" class="btn-primary print">Print</a>
+                <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

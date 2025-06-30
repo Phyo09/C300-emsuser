@@ -1,0 +1,2042 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    var unit1 = ViewData["unit1"] as string;
+    var unit2 = ViewData["unit2"];
+    var unit3 = ViewData["unit3"];
+    var unit4 = ViewData["unit4"] as string;
+    var OTH = ViewData["OTH"] as List<Temperature>;
+    var OTL = ViewData["OTL"] as List<Temperature>;
+    var OHH = ViewData["OHH"] as List<Humidity>;
+    var OHL = ViewData["OHL"] as List<Humidity>;
+    var OLH = ViewData["OLH"] as List<Light>;
+    var OLL = ViewData["OLL"] as List<Light>;
+    var OWH = ViewData["OWH"] as List<Weight>;
+    var OWL = ViewData["OWL"] as List<Weight>;
+
+}
+
+@section ScriptSection {
+    <link href="~/lib/styles/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="~/lib/scripts/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            //Tempe over Limit
+            $('#OTH').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+            //Temp limit below
+            $('#OTL').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+            //Humidity over Limit
+            $('#OHH').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+            //humidity limit below
+            $('#OHL').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+            //Light over Limit
+            $('#OLH').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+            //light limit below
+            $('#OLL').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+            //Weight over Limit
+            $('#OWH').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+            //Weight limit below
+            $('#OWL').DataTable({
+                ordering: true,
+                order: [[2, "desc"]],
+                paging: true,
+                searching: false,
+                info: true,
+                lengthChange: false,
+                pageLength: 5,
+                pagingType: "full_numbers",
+                dom: '<"top"i>rt<"bottom"lp>'
+
+            });
+
+
+            function checkDash(name) {
+                var apiUrl = "/api/Past/getdash/" +name; /*setMonth dropdown*/
+                $.getJSON(apiUrl, function (result) {
+                    //console.log(result)
+                    //result = result as boolean;
+                    if (result == "1") {
+                        console.log(result + "hdhdh")
+                        SetActive(name);
+
+                    }
+                    else {
+                        console.log(result + "qwerty")
+                        RemoveActive(name);
+
+                    }
+                    //return result;
+                });
+            }
+            //Variable
+            //var showCur = false;
+            //var showTdy = false;
+            //var showLT = false;
+            //var showLH = false;
+            //var showLL = false;
+            //var showLF = false;
+            //var showLA = false;
+            //var showAH1 = false;
+            //var showAH2 = false;
+            //var showAH3 = false;
+            //var showAH4 = false;
+            //var showAH5 = false;
+            //var showYes = false;
+            //var showLW = false;
+            //var showL15 = false;
+            //var showLM = false;
+            //var showOTH = true;
+            //var showOTL = true;
+            //var showOHH = true;
+            //var showOHL = true;
+            //var showOLH = true;
+            //var showOLL = true;
+            //var showOWH = true;
+            //var showOWL = true;
+
+
+            function SetActive(name) {
+                $("#btn" +name).css('background', '#00C851'); //active
+                $("#btn" + name).css('color', 'white');
+                $('#div' + name).css("display", "");
+            }
+            function RemoveActive(name) {
+                $("#btn" +name).css('background', '#d6d4d4'); //not active
+                $("#btn" + name).css('color', '#6b6d6d');
+                $('#div' + name).css("display", "none");
+            }
+            function onclick(name) {
+                if ($('#div' + name).is(':hidden')) {
+                    var apiUrl = "/api/Past/updatedash/" + name+"/1";
+                    $.getJSON(apiUrl, function (result) {
+                        if (result == "1") {
+                            SetActive(name);
+
+                        }
+                        else {
+                            RemoveActive(name);
+
+                        }
+                        //return result;
+                    });
+                }
+                else {
+                    var apiUrl = "/api/Past/updatedash/" + name + "/0";
+                    $.getJSON(apiUrl, function (result) {
+                        if (result == "1") {
+                            SetActive(name);
+
+                        }
+                        else {
+                            RemoveActive(name);
+
+                        }
+                    });
+                }
+
+            }
+
+            checkAll();
+
+            //dropdown
+            $("#ddlType").change(function () {
+                var type = $("#ddlType").val();
+                if (type == 1) {
+                    $("#dashNavi").show();
+                    checkAll();
+                }
+                else if (type == 2) {
+                    $("#dashNavi").hide();
+                    $('#divCur').css("display", "");
+                    $('#divTdy').css("display", "");
+                    $('#divYes').css("display", "none");
+                    $('#divLW').css("display", "none");
+                    $('#divL15').css("display", "none");
+                    $('#divLM').css("display", "none");
+                    $('#divLT').css("display", "");
+                    $('#divLH').css("display", "");
+                    $('#divLL').css("display", "");
+                    $('#divLF').css("display", "");
+                    $('#divLA').css("display", "");
+                    $('#divAH1').css("display", "");
+                    $('#divAH2').css("display", "none");
+                    $('#divAH3').css("display", "none");
+                    $('#divAH4').css("display", "none");
+                    $('#divAH5').css("display", "none");
+                    $('#divOTH').css("display", "none");
+                    $('#divOTL').css("display", "none");
+                    $('#divOHH').css("display", "none");
+                    $('#divOHL').css("display", "none");
+                    $('#divOLH').css("display", "none");
+                    $('#divOLL').css("display", "none");
+                    $('#divOWH').css("display", "none");
+                    $('#divOWL').css("display", "none");
+                }
+                else if (type == 3) {
+                    $("#dashNavi").hide();
+                    $('#divCur').css("display", "none");
+                    $('#divTdy').css("display", "none");
+                    $('#divYes').css("display", "");
+                    $('#divLW').css("display", "none");
+                    $('#divL15').css("display", "none");
+                    $('#divLM').css("display", "none");
+                    $('#divLT').css("display", "none");
+                    $('#divLH').css("display", "none");
+                    $('#divLL').css("display", "none");
+                    $('#divLF').css("display", "none");
+                    $('#divLA').css("display", "none");
+                    $('#divAH1').css("display", "none");
+                    $('#divAH2').css("display", "");
+                    $('#divAH3').css("display", "none");
+                    $('#divAH4').css("display", "none");
+                    $('#divAH5').css("display", "none");
+                    $('#divOTH').css("display", "none");
+                    $('#divOTL').css("display", "none");
+                    $('#divOHH').css("display", "none");
+                    $('#divOHL').css("display", "none");
+                    $('#divOLH').css("display", "none");
+                    $('#divOLL').css("display", "none");
+                    $('#divOWH').css("display", "none");
+                    $('#divOWL').css("display", "none");
+                }
+                else if (type == 4) {
+                    $("#dashNavi").hide();
+                    $('#divCur').css("display", "none");
+                    $('#divTdy').css("display", "none");
+                    $('#divYes').css("display", "none");
+                    $('#divLW').css("display", "");
+                    $('#divL15').css("display", "none");
+                    $('#divLM').css("display", "none");
+                    $('#divLT').css("display", "none");
+                    $('#divLH').css("display", "none");
+                    $('#divLL').css("display", "none");
+                    $('#divLF').css("display", "none");
+                    $('#divLA').css("display", "none");
+                    $('#divAH1').css("display", "none");
+                    $('#divAH2').css("display", "none");
+                    $('#divAH3').css("display", "");
+                    $('#divAH4').css("display", "none");
+                    $('#divAH5').css("display", "none");
+                    $('#divOTH').css("display", "none");
+                    $('#divOTL').css("display", "none");
+                    $('#divOHH').css("display", "none");
+                    $('#divOHL').css("display", "none");
+                    $('#divOLH').css("display", "none");
+                    $('#divOLL').css("display", "none");
+                    $('#divOWH').css("display", "none");
+                    $('#divOWL').css("display", "none");
+                }
+                else if (type == 5) {
+                    $("#dashNavi").hide();
+                    $('#divCur').css("display", "none");
+                    $('#divTdy').css("display", "none");
+                    $('#divYes').css("display", "none");
+                    $('#divLW').css("display", "none");
+                    $('#divL15').css("display", "");
+                    $('#divLM').css("display", "none");
+                    $('#divLT').css("display", "none");
+                    $('#divLH').css("display", "none");
+                    $('#divLL').css("display", "none");
+                    $('#divLF').css("display", "none");
+                    $('#divLA').css("display", "none");
+                    $('#divAH1').css("display", "none");
+                    $('#divAH2').css("display", "none");
+                    $('#divAH3').css("display", "none");
+                    $('#divAH4').css("display", "");
+                    $('#divAH5').css("display", "none");
+                    $('#divOTH').css("display", "none");
+                    $('#divOTL').css("display", "none");
+                    $('#divOHH').css("display", "none");
+                    $('#divOHL').css("display", "none");
+                    $('#divOLH').css("display", "none");
+                    $('#divOLL').css("display", "none");
+                    $('#divOWH').css("display", "none");
+                    $('#divOWL').css("display", "none");
+                }
+                else if (type == 6) {
+                    $("#dashNavi").hide();
+                    $('#divCur').css("display", "none");
+                    $('#divTdy').css("display", "none");
+                    $('#divYes').css("display", "none");
+                    $('#divLW').css("display", "none");
+                    $('#divL15').css("display", "none");
+                    $('#divLM').css("display", "");
+                    $('#divLT').css("display", "none");
+                    $('#divLH').css("display", "none");
+                    $('#divLL').css("display", "none");
+                    $('#divLF').css("display", "none");
+                    $('#divLA').css("display", "none");
+                    $('#divAH1').css("display", "none");
+                    $('#divAH2').css("display", "none");
+                    $('#divAH3').css("display", "none");
+                    $('#divAH4').css("display", "none");
+                    $('#divAH5').css("display", "");
+                    $('#divOTH').css("display", "none");
+                    $('#divOTL').css("display", "none");
+                    $('#divOHH').css("display", "none");
+                    $('#divOHL').css("display", "none");
+                    $('#divOLH').css("display", "none");
+                    $('#divOLL').css("display", "none");
+                    $('#divOWH').css("display", "none");
+                    $('#divOWL').css("display", "none");
+                }
+            });
+
+            function checkAll() {
+                //Current
+                checkDash("Cur");
+                //if (showCur == true) {
+                //    SetActive("Cur");
+                //}
+                //else {
+                //    RemoveActive("Cur");
+                //}
+                //console.log(checkDash("Cur")+"trying")
+                //if (checkDash("Cur")) {
+                //    console.log("OK")
+                //    SetActive("Cur");
+                //}
+                //else {
+                //    console.log("again")
+                //    RemoveActive("Cur");
+                //}
+                //Today
+                checkDash("Tdy");
+                //Yesterday
+                checkDash("Yes");
+                //Last Week
+                checkDash("LW");
+                //Last 15 Days
+                checkDash("L15");
+                //Last Month
+                checkDash("LM");
+
+                //Live Temp
+                checkDash("LT");
+                //Live Humidity
+                checkDash("LH");
+                //Live Light
+                checkDash("LL");
+                //Live Force
+                checkDash("LF");
+                //Live All
+                checkDash("LA");
+
+                //Average Per Hour Today
+                checkDash("AH1");
+                //Average Per Hour Yesterday
+                checkDash("AH2");
+                //Average hourly Last week
+                checkDash("AH3");
+                //Average hourly last 15 days
+                checkDash("AH4");
+                //Average hourly Last MONTH
+                checkDash("AH5");
+
+
+                //overall over limit temp
+                checkDash("OTH");
+                //overall below limit temp
+                checkDash("OTL");
+                //overall over limit humidity
+                checkDash("OHH");
+                //overall below limit humidity
+                checkDash("OHL");
+                //overall over limit light
+                checkDash("OLH");
+                //overall below limit light
+                checkDash("OLL");
+                //overall over limit weight
+                checkDash("OWH");
+                //overall below limit weight
+                checkDash("OWL");
+            }
+            //Current
+            //var showCur = true;
+            //if (showCur == true) {
+            //    SetActive("Cur");
+            //}
+            //else {
+            //    RemoveActive("Cur");
+            //}
+            $("#btnCur").click(function () {
+                onclick("Cur");
+            });
+
+            //Today
+            $("#btnTdy").click(function () {
+                //if (showTdy == true) {
+                //    showTdy = false;
+                //    RemoveActive("Tdy");
+                //}
+                //else {
+                //    showTdy = true;
+                //    SetActive("Tdy");
+                //}
+                onclick("Tdy");
+            });
+
+            ////Yesterday
+            $("#btnYes").click(function () {
+                onclick("Yes");
+            });
+
+            ////Last Week
+            $("#btnLW").click(function () {
+                onclick("LW");
+            });
+
+            ////Last 15 Days
+            $("#btnL15").click(function () {
+                onclick("L15");
+            });
+
+            ////Last Month
+            $("#btnLM").click(function () {
+                onclick("LM");
+            });
+
+            ////Live Temp
+            $("#btnLT").click(function () {
+                onclick("LT");
+            });
+
+            ////Live Humidity
+            $("#btnLH").click(function () {
+                onclick("LH");
+            });
+
+            ////Live Light
+            $("#btnLL").click(function () {
+                onclick("LL");
+            });
+
+            ////Live Force
+            $("#btnLF").click(function () {
+                onclick("LF");
+            });
+
+            ////Live All
+            $("#btnLA").click(function () {
+                onclick("LA");
+            });
+
+            ////Average Per Hour Today
+            $("#btnAH1").click(function () {
+                onclick("AH1");
+            });
+
+            ////Average Per Hour Yesterday
+            $("#btnAH2").click(function () {
+                onclick("AH2");
+            });
+
+            ////Average hourly Last week
+            $("#btnAH3").click(function () {
+                onclick("AH3");
+            });
+
+            ////Average hourly last 15 days
+            $("#btnAH4").click(function () {
+                onclick("AH4");
+            });
+
+            ////Average hourly Last MONTH
+            $("#btnAH5").click(function () {
+                onclick("AH5");
+            });
+
+
+
+            //Overall temp limit over
+            $("#btnOTH").click(function () {
+                onclick("OTH");
+            });
+
+            //Overall temp limit below
+            $("#btnOTL").click(function () {
+                onclick("OTL");
+            });
+
+            //Overall humidity limit over
+            $("#btnOHH").click(function () {
+                onclick("OHH");
+            });
+
+            //Overall humidity limit below
+            $("#btnOHL").click(function () {
+                onclick("OHL");
+            });
+
+            //Overall light limit over
+            $("#btnOLH").click(function () {
+                onclick("OLH");
+            });
+
+            //Overall light limit below
+            $("#btnOLL").click(function () {
+                onclick("OLL");
+            });
+
+            //Overall weight limit over
+            $("#btnOWH").click(function () {
+                onclick("OWH");
+            });
+
+            //Overall weight limit below
+            $("#btnOWL").click(function () {
+                onclick("OWL");
+            });
+
+            //Add Chart
+            $("#btnAC").click(function () {
+                console.log("click")
+            });
+
+            //Temp Live
+            var mychart1 = new Chart(document.getElementById("chart1"), {
+                type: 'line',
+                data: {
+                    labels: ['', '', '', '', '', '', '', '', ''],
+                    datasets: [{
+                        label: 'Temperature',
+                        backgroundColor: "red",
+                        borderColor: "red",
+                        fill: false,
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Progressive Line Graph of Temperature',
+                        fontSize: 20,
+                    }
+                }
+            });
+            @*$.ajaxSetup({ cache: false });
+            setInterval(AjaxAddDataTemp, 2000);
+            function AjaxAddDataTemp() {
+                $.getJSON(
+                    "/Progressive/GetDataTemp",
+                    function (data) {
+                        mychart1.data.datasets[0].data.push(data);
+                        mychart1.data.datasets[0].data.splice(0, 1);
+                        //console.log(data);
+                        mychart1.update();
+                        $("#pTemp").html(data+' @unit1');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataTempTime",
+                    function (test) {
+                        mychart1.data.labels.push(test);
+                        mychart1.data.labels.splice(0, 1);
+                        mychart1.update();
+                    }
+                );
+            };*@
+
+            //Hum Live
+            var mychart2 = new Chart(document.getElementById("chart2"), {
+                type: 'line',
+                data: {
+                    labels: ['', '', '', '', '', '', '', '', ''],
+                    datasets: [{
+                        label: 'Humidity',
+                        backgroundColor: "#0375D8",
+                        borderColor: "#0375D8",
+                        fill: false,
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Progressive Line Graph of Humidity',
+                        fontSize: 20,
+                    }
+                }
+            });
+            @*$.ajaxSetup({ cache: false });
+            setInterval(AjaxAddDataHum, 2000);
+            function AjaxAddDataHum() {
+                $.getJSON(
+                    "/Progressive/GetDataHum",
+                    function (data) {
+                        mychart2.data.datasets[0].data.push(data);
+                        mychart2.data.datasets[0].data.splice(0, 1);
+                        mychart2.update();
+                        $("#pHum").html(data+' @unit2');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataHumTime",
+                    function (test) {
+                        mychart2.data.labels.push(test);
+                        mychart2.data.labels.splice(0, 1);
+                        mychart2.update();
+                    }
+                );
+            };*@
+
+            //Light Live
+            var mychart3 = new Chart(document.getElementById("chart3"), {
+                type: 'line',
+                data: {
+                    labels: ['', '', '', '', '', '', '', '', ''],
+                    datasets: [{
+                        label: 'Light',
+                        backgroundColor: "#FFC000",
+                        borderColor: "#FFC000",
+                        fill: false,
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Progressive Line Graph of Light',
+                        fontSize: 20,
+                    }
+                }
+            });
+            @*$.ajaxSetup({ cache: false });
+            setInterval(AjaxAddDataLight, 2000);
+            function AjaxAddDataLight() {
+                $.getJSON(
+                    "/Progressive/GetDataLight",
+                    function (data) {
+                        mychart3.data.datasets[0].data.push(data);
+                        mychart3.data.datasets[0].data.splice(0, 1);
+                        mychart3.update();
+                        $("#pLight").html(data+' @unit3');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataLightTime",
+                    function (test) {
+                        mychart3.data.labels.push(test);
+                        mychart3.data.labels.splice(0, 1);
+                        mychart3.update();
+                    }
+                );
+            };*@
+
+            //Weight Live
+            var mychart4 = new Chart(document.getElementById("chart4"), {
+                type: 'line',
+                data: {
+                    labels: ['', '', '', '', '', '', '', '', ''],
+                    datasets: [{
+                        label: 'Force',
+                        backgroundColor: "green",
+                        borderColor: "green",
+                        fill: false,
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Progressive Line Graph of Force',
+                        fontSize: 20,
+                    }
+                }
+            });
+            @*$.ajaxSetup({ cache: false });
+            setInterval(AjaxAddDataWeight, 2000);
+            function AjaxAddDataWeight() {
+                $.getJSON(
+                    "/Progressive/GetDataWeight",
+                    function (data) {
+                        mychart4.data.datasets[0].data.push(data);
+                        mychart4.data.datasets[0].data.splice(0, 1);
+                        mychart4.update();
+                        $("#pForce").html(data+' @unit4');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataWeightTime",
+                    function (test) {
+                        mychart4.data.labels.push(test);
+                        mychart4.data.labels.splice(0, 1);
+                        mychart4.update();
+                    }
+                );
+            };*@
+
+            //All Live
+            var mychart5 = new Chart(document.getElementById("chart5"), {
+                type: 'line',
+                data: {
+                    labels: ['', '', '', '', '', '', '', '', ''],
+                    datasets: [{
+                        label: 'Temperature',
+                        backgroundColor: "red",
+                        borderColor: "red",
+                        fill: false,
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    },
+                        {
+                            label: 'Humidity',
+                            backgroundColor: "#0375D8",
+                            borderColor: "#0375D8",
+                            fill: false,
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        },
+                        {
+                            label: 'Light',
+                            backgroundColor: "#FFC000",
+                            borderColor: "#FFC000",
+                            fill: false,
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        },
+                        {
+                            label: 'Force',
+                            backgroundColor: "green",
+                            borderColor: "green",
+                            fill: false,
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        },
+
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Progressive Line Graph of THLW',
+                        fontSize: 20,
+                    }
+                }
+            });
+            $.ajaxSetup({ cache: false });
+            setInterval(AjaxAddDataAll, 2000);
+            function AjaxAddDataAll() {
+                $.getJSON(
+                    "/Progressive/GetDataTemp",
+                    function (data) {
+                        mychart5.data.datasets[0].data.push(data);
+                        mychart5.data.datasets[0].data.splice(0, 1);
+                        mychart5.update();
+                        mychart1.data.datasets[0].data.push(data);
+                        mychart1.data.datasets[0].data.splice(0, 1);
+                        mychart1.update();
+                        $("#pTemp").html(data+' @unit1');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataTempTime",
+                    function (test) {
+                        mychart1.data.labels.push(test);
+                        mychart1.data.labels.splice(0, 1);
+                        mychart1.update();
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataHum",
+                    function (data) {
+                        mychart5.data.datasets[1].data.push(data);
+                        mychart5.data.datasets[1].data.splice(0, 1);
+                        mychart5.update();
+                        mychart2.data.datasets[0].data.push(data);
+                        mychart2.data.datasets[0].data.splice(0, 1);
+                        mychart2.update();
+                        $("#pHum").html(data+' @unit2');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataHumTime",
+                    function (test) {
+                        mychart2.data.labels.push(test);
+                        mychart2.data.labels.splice(0, 1);
+                        mychart2.update();
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataLight",
+                    function (data) {
+                        mychart5.data.datasets[2].data.push(data);
+                        mychart5.data.datasets[2].data.splice(0, 1);
+                        mychart5.update();
+                        mychart3.data.datasets[0].data.push(data);
+                        mychart3.data.datasets[0].data.splice(0, 1);
+                        mychart3.update();
+                        $("#pLight").html(data+' @unit3');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataLightTime",
+                    function (test) {
+                        mychart3.data.labels.push(test);
+                        mychart3.data.labels.splice(0, 1);
+                        mychart3.update();
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataWeight",
+                    function (data) {
+                        mychart5.data.datasets[3].data.push(data);
+                        mychart5.data.datasets[3].data.splice(0, 1);
+                        mychart5.update();
+                        mychart4.data.datasets[0].data.push(data);
+                        mychart4.data.datasets[0].data.splice(0, 1);
+                        mychart4.update();
+                        $("#pForce").html(data+' @unit4');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetDataWeightTime",
+                    function (test) {
+                        mychart5.data.labels.push(test);
+                        mychart5.data.labels.splice(0, 1);
+                        mychart5.update();
+                        mychart4.data.labels.push(test);
+                        mychart4.data.labels.splice(0, 1);
+                        mychart4.update();
+                    }
+                );
+            };
+
+            $.ajaxSetup({ cache: false });
+            setInterval(AjaxAHLT, 2000);
+            function AjaxAHLT() {
+                $.getJSON(
+                    "/Progressive/GetAvgTempTdy",
+                    function (data) {
+                        $("#ATT").html(data+' @unit1');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetLowestTempTdy",
+                    function (data) {
+                        $("#LTT").html(data+' @unit1/ ');
+                    }
+                );
+                 $.getJSON(
+                    "/Progressive/GetHighestTempTdy",
+                    function (data) {
+                        $("#HTT").html(data+' @unit1');
+                    }
+                );
+               $.getJSON(
+                    "/Progressive/GetAvgHumTdy",
+                    function (data) {
+                        $("#AHT").html(data+' @unit2');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetLowestHumTdy",
+                    function (data) {
+                        $("#LHT").html(data+' @unit2/ ');
+                    }
+                );
+                 $.getJSON(
+                    "/Progressive/GetHighestHumTdy",
+                    function (data) {
+                        $("#HHT").html(data+' @unit2');
+                    }
+                );
+                               $.getJSON(
+                    "/Progressive/GetAvgLightTdy",
+                    function (data) {
+                        $("#ALT").html(data+' @unit3');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetLowestLightTdy",
+                    function (data) {
+                        $("#LLT").html(data+' @unit3/ ');
+                    }
+                );
+                 $.getJSON(
+                    "/Progressive/GetHighestLightTdy",
+                    function (data) {
+                        $("#HLT").html(data+' @unit3');
+                    }
+                );
+               $.getJSON(
+                    "/Progressive/GetAvgWeightTdy",
+                    function (data) {
+                        $("#AWT").html(data+' @unit4');
+                    }
+                );
+                $.getJSON(
+                    "/Progressive/GetLowestWeightTdy",
+                    function (data) {
+                        $("#LWT").html(data+' @unit4/ ');
+                    }
+                );
+                 $.getJSON(
+                    "/Progressive/GetHighestWeightTdy",
+                    function (data) {
+                        $("#HWT").html(data+' @unit4');
+                    }
+                );
+            };
+
+            //Average All Today
+            var mychart6 = new Chart(document.getElementById("chart6"), {
+
+                type: 'bar',
+                data: {
+                   labels: @Json.Serialize(ViewData["hourT"]),
+                   datasets:
+                   [
+                       {
+                           label: 'Temperature',
+                           fill: false,
+                           borderColor: 'red',
+                           backgroundColor: 'red',
+                           data: @Json.Serialize(ViewData["modelT1"])
+                       },
+                       {
+                            label: 'Humidity',
+                            backgroundColor: "#0375D8",
+                            borderColor: "#0375D8",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelT2"])
+                        },
+                        {
+                            label: 'Light',
+                            backgroundColor: "#FFC000",
+                            borderColor: "#FFC000",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelT3"])
+                        },
+                        {
+                            label: 'Force',
+                            backgroundColor: "green",
+                            borderColor: "green",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelT4"])
+                        },
+                   ]
+                },
+                options:
+                {
+                   responsive: true,
+                   legend: {
+                      display: true
+                   },
+                   title: {
+                      display: true,
+                      text: 'Average Value Per Hour (Today)',
+                      fontSize: 20,
+                   },
+                   scales: {
+                       yAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Average Unit'
+                           }
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Hour'
+                           }
+                       }]
+                   }
+                }
+            });
+
+            //Average All Yesterday
+            var mychart7 = new Chart(document.getElementById("chart7"), {
+
+                type: 'bar',
+                data: {
+                   labels: @Json.Serialize(ViewData["hourY"]),
+                   datasets:
+                   [
+                       {
+                           label: 'Temperature',
+                           fill: false,
+                           borderColor: 'red',
+                           backgroundColor: 'red',
+                           data: @Json.Serialize(ViewData["modelY1"])
+                       },
+                       {
+                            label: 'Humidity',
+                            backgroundColor: "#0375D8",
+                            borderColor: "#0375D8",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelY2"])
+                        },
+                        {
+                            label: 'Light',
+                            backgroundColor: "#FFC000",
+                            borderColor: "#FFC000",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelY3"])
+                        },
+                        {
+                            label: 'Force',
+                            backgroundColor: "green",
+                            borderColor: "green",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelY4"])
+                        },
+                   ]
+                },
+                options:
+                {
+                   responsive: true,
+                   legend: {
+                      display: true
+                   },
+                   title: {
+                      display: true,
+                      text: 'Average Value Per Hour (Yesterday)',
+                      fontSize: 20,
+                   },
+                   scales: {
+                       yAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Average Unit'
+                           }
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Hour'
+                           }
+                       }]
+                   }
+                }
+            });
+
+            //Average All Last Week
+            var mychart8 = new Chart(document.getElementById("chart8"), {
+
+                type: 'bar',
+                data: {
+                   labels: @Json.Serialize(ViewData["hourW"]),
+                   datasets:
+                   [
+                       {
+                           label: 'Temperature',
+                           fill: false,
+                           borderColor: 'red',
+                           backgroundColor: 'red',
+                           data: @Json.Serialize(ViewData["modelW1"])
+                       },
+                       {
+                            label: 'Humidity',
+                            backgroundColor: "#0375D8",
+                            borderColor: "#0375D8",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelW2"])
+                        },
+                        {
+                            label: 'Light',
+                            backgroundColor: "#FFC000",
+                            borderColor: "#FFC000",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelW3"])
+                        },
+                        {
+                            label: 'Force',
+                            backgroundColor: "green",
+                            borderColor: "green",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelW4"])
+                        },
+                   ]
+                },
+                options:
+                {
+                   responsive: true,
+                   legend: {
+                      display: true
+                   },
+                   title: {
+                      display: true,
+                      text: 'Average Hourly Value(Last Week)',
+                      fontSize: 20,
+                   },
+                   scales: {
+                       yAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Average Unit'
+                           }
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Hour'
+                           }
+                       }]
+                   }
+                }
+            });
+
+            //Average All Last 15 Days
+            var mychart9 = new Chart(document.getElementById("chart9"), {
+
+                type: 'bar',
+                data: {
+                   labels: @Json.Serialize(ViewData["hourF"]),
+                   datasets:
+                   [
+                       {
+                           label: 'Temperature',
+                           fill: false,
+                           borderColor: 'red',
+                           backgroundColor: 'red',
+                           data: @Json.Serialize(ViewData["modelF1"])
+                       },
+                       {
+                            label: 'Humidity',
+                            backgroundColor: "#0375D8",
+                            borderColor: "#0375D8",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelF2"])
+                        },
+                        {
+                            label: 'Light',
+                            backgroundColor: "#FFC000",
+                            borderColor: "#FFC000",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelF3"])
+                        },
+                        {
+                            label: 'Force',
+                            backgroundColor: "green",
+                            borderColor: "green",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelF4"])
+                        },
+                   ]
+                },
+                options:
+                {
+                   responsive: true,
+                   legend: {
+                      display: true
+                   },
+                   title: {
+                      display: true,
+                      text: 'Average Hourly Value(Last 15 Days)',
+                      fontSize: 20,
+                   },
+                   scales: {
+                       yAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Average Unit'
+                           }
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Hour'
+                           }
+                       }]
+                   }
+                }
+            });
+
+            //Average All Last Week
+            var mychart10 = new Chart(document.getElementById("chart10"), {
+
+                type: 'bar',
+                data: {
+                   labels: @Json.Serialize(ViewData["hourM"]),
+                   datasets:
+                   [
+                       {
+                           label: 'Temperature',
+                           fill: false,
+                           borderColor: 'red',
+                           backgroundColor: 'red',
+                           data: @Json.Serialize(ViewData["modelM1"])
+                       },
+                       {
+                            label: 'Humidity',
+                            backgroundColor: "#0375D8",
+                            borderColor: "#0375D8",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelM2"])
+                        },
+                        {
+                            label: 'Light',
+                            backgroundColor: "#FFC000",
+                            borderColor: "#FFC000",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelM3"])
+                        },
+                        {
+                            label: 'Force',
+                            backgroundColor: "green",
+                            borderColor: "green",
+                            fill: false,
+                            data: @Json.Serialize(ViewData["modelM4"])
+                        },
+                   ]
+                },
+                options:
+                {
+                   responsive: true,
+                   legend: {
+                      display: true
+                   },
+                   title: {
+                      display: true,
+                      text: 'Average Hourly Value(Last Month)',
+                      fontSize: 20,
+                   },
+                   scales: {
+                       yAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Average Unit'
+                           }
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Hour'
+                           }
+                       }]
+                   }
+                }
+            });
+
+            //function AverageDataAll() {
+            //    $.getJSON(
+            //        "/api/Past/GetAverage/1",
+            //        function (result) {
+            //            $.each(result, function (i, field) {
+            //                mychart6.data.datasets[0].data.push(field.average);
+            //                mychart6.update();
+            //            });
+
+            //        }
+            //    );
+            //    $.getJSON(
+            //        "/api/Past/GetAverage/2",
+            //        function (result) {
+            //            $.each(result, function (i, field) {
+            //                mychart6.data.datasets[1].data.push(field.average);
+            //                mychart6.update();
+            //            });
+
+            //        }
+            //    );
+            //    $.getJSON(
+            //        "/api/Past/GetAverage/3",
+            //        function (result) {
+            //            $.each(result, function (i, field) {
+            //                mychart6.data.datasets[2].data.push(field.average);
+            //                mychart6.update();
+            //            });
+
+            //        }
+            //    );
+            //    $.getJSON(
+            //        "/api/Past/GetAverage/4",
+            //        function (result) {
+            //            $.each(result, function (i, field) {
+            //                mychart6.data.datasets[3].data.push(field.average);
+            //                mychart6.update();
+            //            });
+
+            //        }
+            //    );
+            //};
+
+
+
+            $('.close').on("click", function () {
+                //$(this).parents('div').fadeOut();
+                $(this).closest('div').fadeOut();
+                var id = $(this).closest('div').prop("id");
+                RemoveActive("#btn"+id.slice(3, ));
+                console.log();
+            });
+
+        });
+    </script>
+    <style>
+        /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+        /*.row.content {
+            height: 550px
+        }*/
+
+        /* Set gray background color and 100% height */
+        /*.sidenav {
+          background-color: #f1f1f1;
+          height: 100%;
+        }*/
+
+        /* On small screens, set height to 'auto' for the grid */
+        /*media screen and (max-width: 767px) {
+          .row.content {height: auto;}
+        }*/
+        body {
+            background-color: #f2f2f2;
+            font-family: Verdana;
+            font-size: small
+        }
+
+        h3 {
+            font-family: Verdana;
+            font-size: 160%;
+            color: white;
+        }
+
+        h2 {
+            font-family: Verdana;
+            font-size: 230%;
+            margin-left: 3%;
+        }
+        h4 {
+            font-family: Verdana;
+            font-size: medium;
+            margin-left: 3%;
+        }
+        .title {
+            font-family: Verdana;
+            font-size: 200%;
+        }
+
+        p {
+            font-family: Verdana;
+            font-size: small;
+        }
+
+        div.overflow {
+            overflow: auto;
+            text-align: left;
+        }
+
+        .btnDB {
+            color: #6b6d6d;
+            background-color: #d6d4d4;
+            font-family: Verdana;
+            font-size: small;
+            font-size-adjust: initial;
+            border-radius: 15px;
+            top: -15px;
+            line-height: 3px;
+        }
+
+            .btnDB:hover {
+                background-color: #00C851;
+                color: white;
+            }
+        .btn-info {
+            border-radius: 15px;
+            font-family: Verdana;
+            background-color: #0889B2;
+            color: white;
+            font-size: small;
+            top: -15px;
+            line-height: 3px;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: grey;
+        }
+        table {
+            font-family: Verdana;
+            font-size: 1px;
+            color:red;
+        }
+        td {
+            font-size: 12px;
+        }
+
+    </style>
+}
+<h2 style="color:orange ; font-weight: bold;">Dashboard</h2>
+<div class="col-sm-11" style="top:-10px">        
+        <select class="col-sm-2" id="ddlType" style="float:right;top:-10px">
+            <option value="1" selected="selected">Dashboard</option>
+            <option value="2">Today</option>
+            <option value="3">Yesterday</option>
+            <option value="4">Last Week</option>
+            <option value="5">Last 15 Days</option>
+            <option value="6">Last Month</option>
+        </select>
+        @*<button class="btn-info" id="btnAC" style="float:right;top:10px">Add Chart</button>*@
+    </div>
+@*<h2>Dashboard </h2>*@
+@*<div class="container-fluid">*@
+<div class="col-sm-11" style="text-align:left;top:-25px">
+    <div id="dashNavi" class="well overflow" style="text-align:center;height:55px">
+            <button class="btnDB" id="btnCur">Current</button>
+            <button class="btnDB" id="btnTdy">Average Lowest/Highest (Today)</button>
+            <button class="btnDB" id="btnYes">Average Lowest/Highest (Yesterday)</button>
+            <button class="btnDB" id="btnLW">Average Lowest/Highest (Last Week)</button>
+            <button class="btnDB" id="btnL15">Average Lowest/Highest (Last 15 Days)</button>
+            <button class="btnDB" id="btnLM">Average Lowest/Highest (Last Month)</button>        
+            <button class="btnDB" id="btnLT">Live Temperature</button>
+            <button class="btnDB" id="btnLH">Live Humidity</button>
+            <button class="btnDB" id="btnLL">Live Light</button>
+            <button class="btnDB" id="btnLF">Live Force</button>
+            <button class="btnDB" id="btnLA">Live All Data</button>
+            <button class="btnDB" id="btnAH1">Average Per Hour (Today)</button>
+            <button class="btnDB" id="btnAH2">Average Per Hour (Yesterday)</button>
+            <button class="btnDB" id="btnAH3">Average Hourly (Last Week)</button>
+            <button class="btnDB" id="btnAH4">Average Hourly (Last 15 Days)</button>
+            <button class="btnDB" id="btnAH5">Average Hourly (Last Month)</button>
+            <button class="btnDB" id="btnOTH">Overall Temperature over Limit</button>
+            <button class="btnDB" id="btnOTL">Overall Temperature below Limit</button>
+            <button class="btnDB" id="btnOHH">Overall Humidity over Limit</button>
+            <button class="btnDB" id="btnOHL">Overall Humidity below Limit</button>
+            <button class="btnDB" id="btnOLH">Overall Light over Limit</button>
+            <button class="btnDB" id="btnOLL">Overall Light below Limit</button>
+            <button class="btnDB" id="btnOWH">Overall Weight over Limit</button>
+            <button class="btnDB" id="btnOWL">Overall Weight below Limit</button>
+
+        @*<button class="btn-info" id="btnAC">Add Chart</button>*@
+        @*<button class="btnDB" id="btnYes">Temperature Live Graph</button>
+            <button class="btnDB" id="btnLW">Humidity Live Graph</button>
+            <button class="btnDB" id="btnL15">Luminaire Live Graph</button>
+            <button class="btnDB" id="btnLM">Force Live Graph</button>*@
+    </div>
+
+    @*Current*@
+    <div id="divCur" class=" well well-sm col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <h2 class="title">Current</h2>
+        <div class="well well-sm col-sm-6" style="background-color:red;color:white">
+            <h3>Temperature</h3>
+            <p id="pTemp" style="margin-left:15%;float:right;margin-right:10%;font-size:110%">0.0 @unit1</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#0375D8;color:white">
+            <h3>Humidity</h3>
+            <p id="pHum" style="margin-left:15%;float:right;margin-right:10%;font-size:110%">0.0 @unit2</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#FFC000;color:white">
+            <h3>Luminaire</h3>
+            <p id="pLight" style="margin-left:15%;float:right;margin-right:10%;font-size:110%">0.0 @unit3</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:green;color:white">
+            <h3>Force</h3>
+            <p id="pForce" style="margin-left:15%;float:right;margin-right:10%;font-size:110%">0.0 @unit4</p>
+        </div>
+    </div>
+
+    @*Today*@
+    <div id="divTdy" class="well well-sm col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <h2 class="title">Today</h2>
+        <div class="well well-sm col-sm-6" style="background-color:red;color:white">
+            <h3>Temperature</h3>
+            @*<p style="margin-left:15%">12'C &emsp;&emsp;&emsp;20'C / 34'C</p>*@
+            <p id="HTT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit1</p>
+            <p id="LTT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit1 /</p>
+            <p id="ATT" style="margin-left:0%;float:left;margin-right:0%;font-size:110%">0.0 @unit1</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#0375D8;color:white">
+            <h3>Humidity</h3>
+            <p id="HHT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit2</p>
+            <p id="LHT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit2 /</p>
+            <p id="AHT" style="margin-left:0%;float:left;margin-right:0%;font-size:110%">0.0 @unit2</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#FFC000;color:white">
+            <h3>Luminaire</h3>
+            <p id="HLT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit3</p>
+            <p id="LLT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit3 /</p>
+            <p id="ALT" style="margin-left:0%;float:left;margin-right:0%;font-size:110%">0.0 @unit3</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:green;color:white">
+            <h3>Force</h3>
+            <p id="HWT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit4</p>
+            <p id="LWT" style="margin-left:0%;float:right;margin-right:0%;font-size:110%">0.0 @unit4 /</p>
+            <p id="AWT" style="margin-left:0%;float:left;margin-right:0%;font-size:110%">0.0 @unit4</p>
+        </div>
+    </div>
+
+    @*Yesterday*@
+    <div id="divYes" class="well well-sm col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <h2 class="title">Yesterday</h2>
+        <div class="well well-sm col-sm-6" style="background-color:red;color:white">
+            <h3>Temperature</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HTY"] @unit1</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LTY"] @unit1 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ATY"] @unit1</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#0375D8;color:white">
+            <h3>Humidity</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HHY"] @unit2</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LHY"] @unit2 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AHY"] @unit2</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#FFC000;color:white">
+            <h3>Luminaire</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HLY"] @unit3</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LLY"]@unit3 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ALY"] @unit3</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:green;color:white">
+            <h3>Force</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HWY"] @unit4</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LWY"] @unit4 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AWY"] @unit4</p>
+        </div>
+    </div>
+
+    @*Last Week*@
+    <div id="divLW" class="well well-sm col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <h2 class="title">Last Week</h2>
+        <div class="well well-sm col-sm-6" style="background-color:red;color:white">
+            <h3>Temperature</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HTLW"] @unit1</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LTLW"] @unit1 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ATLW"] @unit1</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#0375D8;color:white">
+            <h3>Humidity</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HHLW"] @unit2</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LHLW"] @unit2 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AHLW"] @unit2</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#FFC000;color:white">
+            <h3>Luminaire</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HLLW"] @unit3</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LLLW"]@unit3 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ALLW"] @unit3</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:green;color:white">
+            <h3>Force</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HWLW"] @unit4</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LWLW"] @unit4 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AWLW"] @unit4</p>
+        </div>
+    </div>
+
+    @*Last 15 Days*@
+    <div id="divL15" class="well well-sm col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <h2 class="title">Last 15 Days</h2>
+        <div class="well well-sm col-sm-6" style="background-color:red;color:white">
+            <h3>Temperature</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HTL15"] @unit1</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LTL15"] @unit1 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ATL15"] @unit1</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#0375D8;color:white">
+            <h3>Humidity</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HHL15"] @unit2</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LHL15"] @unit2 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AHL15"] @unit2</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#FFC000;color:white">
+            <h3>Luminaire</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HLL15"] @unit3</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LLL15"]@unit3 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ALL15"] @unit3</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:green;color:white">
+            <h3>Force</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HWL15"] @unit4</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LWL15"] @unit4 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AWL15"] @unit4</p>
+        </div>
+    </div>
+
+    @*Last Month*@
+    <div id="divLM" class="well well-sm col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <h2 class="title">Last Month</h2>
+        <div class="well well-sm col-sm-6" style="background-color:red;color:white">
+            <h3>Temperature</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HTLM"] @unit1</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LTLM"] @unit1 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ATLM"] @unit1</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#0375D8;color:white">
+            <h3>Humidity</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HHLM"] @unit2</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LHLM"] @unit2 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AHLM"] @unit2</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:#FFC000;color:white">
+            <h3>Luminaire</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HLLM"] @unit3</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LLLM"]@unit3 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["ALLM"] @unit3</p>
+        </div>
+
+        <div class="well well-sm col-sm-6" style="background-color:green;color:white">
+            <h3>Force</h3>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["HWLM"] @unit4</p>
+            <p style="margin-left:0%;float:right;margin-right:0%;font-size:110%">@ViewData["LWLM"] @unit4 /</p>
+            <p style="margin-left:0%;float:left;margin-right:0%;font-size:110%">@ViewData["AWLM"] @unit4</p>
+        </div>
+    </div>
+
+    @*Live Temp*@
+    <div id="divLT" class="well col-sm-4" style="display:none;">
+        @*<h3 style="color:black">Temperature Live Graph</h3>*@
+        @*<div style="width:90%;height:90%;">*@
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart1" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Live Hum*@
+    <div id="divLH" class="well col-sm-4" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart2" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Live Light*@
+    <div id="divLL" class="well col-sm-4" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart3" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Live Weight*@
+    <div id="divLF" class="well col-sm-4" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart4" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Live All*@
+    <div id="divLA" class="well col-sm-4" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart5" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Average All Today*@
+    <div id="divAH1" class="well col-sm-4" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart6" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Average All Yesterday*@
+    <div id="divAH2" class="well col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart7" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Average All Last Week*@
+    <div id="divAH3" class="well col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart8" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Average All Last 15 Days*@
+    <div id="divAH4" class="well col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart9" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*Average All Last Month*@
+    <div id="divAH5" class="well col-sm-6" style="display:none;">
+        <button type="button" class="close" style=""><span>&times;</span></button>
+        <canvas id="chart10" class="col-sm-9" width="75" height="80"></canvas>
+    </div>
+
+    @*overall Over Limit(TEMPERATURE)*@
+    <div id="divOTH" class="well col-sm-6" style="display:;">
+        <h4 style="text-align:center">Temperature Limit over @ViewData["highT"] @unit1</h4>
+        <table id="OTH" class="table ">
+            <thead>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">Temperature</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Temperature poke in OTH)
+                {
+                    <tr>
+                        <td>@poke.TemperatureId</td>
+                        @if (unit1 == "K")
+                        {
+                            <td style="color:red;"> @(poke.TLevel + 273.15) @unit1</td>
+                        }
+                        else if (unit1 == "'F")
+                        {
+                            <td style="color:red;"> @((poke.TLevel * 1.8) + 32) @unit1</td>
+                        }
+                        else
+                        {
+                            <td style="color:red;"> @poke.TLevel @unit1</td>
+                        }
+                        <td>@poke.TDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*overall below limit (temp)*@
+    <div id="divOTL" class="well col-sm-6" style="display:none;">
+        <h4 style="text-align:center">Temperature Limit below @ViewData["lowT"] @unit1</h4>
+        <table id="OTL" class="table ">
+            <thead>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">Temperature</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Temperature poke in OTL)
+                {
+                    <tr>
+                        <td>@poke.TemperatureId</td>
+                        @if (unit1 == "K")
+                        {
+                            <td> @(poke.TLevel + 273.15) @unit1</td>
+                        }
+                        else if (unit1 == "'F")
+                        {
+                            <td> @((poke.TLevel * 1.8) + 32) @unit1</td>
+                        }
+                        else
+                        {
+                            <td> @poke.TLevel @unit1</td>
+                        }
+                        <td>@poke.TDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*overall Over Limit(Hum)*@
+    <div id="divOHH" class="well col-sm-6" style="display:none;">
+        <h4 style="text-align:center">Humidity Limit over @ViewData["highW"] @unit2</h4>
+        <table id="OHH" class="table " >            
+            <thead>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">Humidity</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Humidity poke in OHH)
+                {
+                    <tr>
+                        <td>@poke.HumidityId</td>
+                        <td style="color:red;">@poke.HLevel @unit2</td>
+                        <td >@poke.HDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*Overall below Limit(Hum)*@
+    <div id="divOHL" class="well col-sm-6" style="display:none;">
+        <h4 style="text-align:center">Humidity Limit below @ViewData["lowH"] @unit2</h4>
+        <table id="OHL" class="table ">
+            <thead>
+                <tr>
+                    <th id="id" class="heading">ID</th>
+                    <th id="type" class="heading">Humidity</th>
+                    <th id="date" class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Humidity poke in OHL)
+                {
+                    <tr>
+                        <td>@poke.HumidityId</td>
+                        <td>@poke.HLevel @unit2</td>
+                        <td>@poke.HDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*overall Over Limit(light)*@    
+    <div id="divOLH" class="well col-sm-6" style="display:none;">
+        <h4 style="text-align:center">Light Limit over @ViewData["highL"] @unit3</h4>
+        <table id="OLH" class="table ">
+            <thead>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">Light</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Light poke in OLH)
+                {
+                    <tr>
+                        <td>@poke.LightId</td>
+                        <td>@poke.LLevel @unit3</td>
+                        <td>@poke.LDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*Overall below Limit(light)*@
+    <div id="divOLL" class="well col-sm-6" style="display:none;">
+        <h4 style="text-align:center">Light Limit below @ViewData["lowL"] @unit3</h4>
+        <table id="OLL" class="table ">
+            <thead>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">Light</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Light poke in OLL)
+                {
+                    <tr>
+                        <td>@poke.LightId</td>
+                        <td>@poke.LLevel @unit3</td>
+                        <td>@poke.LDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*overall Over Limit(weight)*@
+    <div id="divOWH" class="well col-sm-6" style="display:none;">
+        <h4 style="text-align:center">Weight Limit over @ViewData["highW"] @unit4</h4>
+        <table id="OWH" class="table ">
+            <thead>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">Weight</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Weight poke in OWH)
+                {
+                    <tr>
+                        <td>@poke.WeightId</td>
+                        @if (unit4 == "g")
+                        {
+                            <td> @(poke.WLevel * 101.97) @unit4</td>
+                        }
+                        else if (unit4 == "kg")
+                        {
+                            <td> @(poke.WLevel * 0.101972) @unit4</td>
+                        }
+                        else if (unit4 == "lb")
+                        {
+                            <td> @(poke.WLevel * 0.224809) @unit4</td>
+                        }
+                        else
+                        {
+                            <td> @poke.WLevel @unit4</td>
+                        }
+                        <td>@poke.WDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*overall below limit (weight)*@
+    <div id="divOWL" class="well col-sm-6" style="display:none;">
+        <h4 style="text-align:center">Weight Limit below @ViewData["lowW"] @unit4</h4>
+        <table id="OWL" class="table ">
+            <thead>
+                <tr>
+                    <th class="heading">ID</th>
+                    <th class="heading">Weight</th>
+                    <th class="heading">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Weight poke in OWL)
+                {
+                    <tr>
+                        <td>@poke.WeightId</td>
+                        @if (unit4 == "g")
+                        {
+                            <td> @(poke.WLevel * 101.97) @unit4</td>
+                        }
+                        else if (unit4 == "kg")
+                        {
+                            <td> @(poke.WLevel * 0.101972) @unit4</td>
+                        }
+                        else if (unit4 == "lb")
+                        {
+                            <td> @(poke.WLevel * 0.224809) @unit4</td>
+                        }
+                        else
+                        {
+                            <td> @poke.WLevel @unit4</td>
+                        }
+                        <td>@poke.WDatetime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    
+
+
+
+
+
+
+
+
+
+    @*<div class="row">
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="well">
+                <p>Text</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p>
+            </div>
+        </div>
+    </div>*@
+</div>
+@*</div>*@

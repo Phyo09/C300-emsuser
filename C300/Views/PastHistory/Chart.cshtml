@@ -1,0 +1,394 @@
+@*@model DateTimeRange*@
+@{
+    var id = Convert.ToInt32(ViewData["id"]);
+    var type = ViewData["type"] as String;
+    var chart = ViewData["chart"] as String;
+    var year = ViewData["Year"] as List<dynamic>;
+    year.Insert(0, new { value = "0", text = "Year" });
+}
+@section ScriptSection {
+
+    <script language="javascript">
+
+        $(document).ready(function () {
+            var format = "XLSX"
+            $("#XLSX").click(function () {
+                format = "XLSX";
+            });
+            $("#XLS").click(function () {
+                format = "XLS";
+            }); $("#ODS").click(function () {
+                format = "ODS";
+            }); $("#CSV").click(function () {
+                format = "CSV";
+            }); $("#PDF").click(function () {
+                format = "PDF";
+            });
+            $("#btnExport").click(function () {
+                $(this).attr("href", "/Print/Test/" + format + "/" + @id);
+                //$("#exportType").fadeOut('slow');
+                $("#exportType").modal("hide")
+            });
+            $('#btnCustomise').show();
+            $('#btnOk').hide();
+            $('#btnCancel').hide();
+            $('#customize').hide();
+
+            $('#start').datetimepicker({ format: 'DD-MMM-YYYY hh:mm:ss A' });
+            $('#end').datetimepicker({ format: 'DD-MMM-YYYY hh:mm:ss A' });
+            //$('#end').datetimepicker({ format: 'DD-MM-YYYY hh:mm:ss A', useCurrent: false });
+            $("#start").on("dp.change", function (e) {
+                $('#end').data("DateTimePicker").minDate(e.date);
+            });
+            $("#end").on("dp.change", function (e) {
+                $('#start').data("DateTimePicker").maxDate(e.date);
+            });
+
+            var mychart = new Chart(document.getElementById("chart"), {
+
+                type: '@ViewData["chart"]',
+                data: {
+                   labels: @Json.Serialize(ViewData["date"]),
+                   datasets:
+                   [
+                       {
+                           label: '@ViewData["type"]',
+                           fill: false,
+                           borderColor: '@ViewData["color"]',
+                           backgroundColor: '@ViewData["color"]',
+                           data: @Json.Serialize(ViewData["model"])
+                       }
+                   ]
+                },
+                options:
+                {
+                   responsive: true,
+                   legend: {
+                      display: true
+                   },
+                   title: {
+                      display: true,
+                      text: '@ViewData["Title"]',
+                      fontSize: 20,
+                   },
+                   scales: {
+                       yAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: '@ViewData["Unit"]',
+                               fontFamily: "Verdana",
+                               fontSize: "15"
+                           },
+                           ticks: {
+                               fontFamily: "Verdana",
+                               fontSize: "11"
+                           }
+                       }],
+                       xAxes: [{
+                           scaleLabel: {
+                               display: true,
+                               labelString: 'Date Time',
+                               fontFamily: "Verdana",
+                               fontSize: "15"
+                           },
+                           ticks: {
+                               fontFamily: "Verdana",
+                               fontSize: "11"
+                           }
+                       }]
+                   }
+                }
+            });
+
+            function SetMonth() {
+                var year = $('#ddlYear').val();
+                var apiUrl = "/api/Past/Year/" +@id+"/"+ year;
+                var ajaxUrl = "/api/past/GetByYear/" + @id+"/" + year;
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                        });
+                    });
+
+                $('#ddlMonth').html("<option selected='selected' value='0'>Month</option>");
+                $.getJSON(apiUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        $('#ddlMonth').append("<option value='" + field + "'>" + field + "</option>")
+                    });
+                });
+         }
+
+            function SetDay() {
+                var year = $('#ddlYear').val();
+                var month = $('#ddlMonth').val();
+                var apiUrl = "/api/Past/Month/" +@id+"/" + year + "/" + month;
+                var ajaxUrl = "/api/Past/GetByMonth/" + @id+"/" + year+"/"+month;
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                    });
+                });
+
+                $('#ddlDay').html("<option selected='selected' value='0'>Day</option>");
+                $.getJSON(apiUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        console.log(field)
+                        $('#ddlDay').append("<option value='" + field + "'>" + field + "</option>")
+                    });
+                });
+            }
+
+            function GetByDay() {
+                var year = $('#ddlYear').val();
+                var month = $('#ddlMonth').val();
+                var day = $('#ddlDay').val();
+                var ajaxUrl = "/api/Past/GetByDay/" + @id+"/" + year + "/" + month + "/" + day;
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                    });
+                });
+            }
+
+         $('#ddlYear').change(SetMonth);
+         $('#ddlMonth').change(SetDay);
+         $('#ddlDay').change(GetByDay);
+            $('#btnCustomise').click(function () {
+                $('#btnCustomise').hide();
+                $('#btnOk').show();
+                $('#btnCancel').show();
+                $('#customize').show();
+            });
+            $('#btnCancel').click(function () {
+                $('#btnCustomise').show();
+                $('#btnOk').hide();
+                $('#btnCancel').hide();
+                $('#customize').hide();
+            });
+            $('#btnOk').click(function () {
+                var start = $("#start1").val();
+                var end = $("#end1").val();
+                console.log(start)
+                console.log(end)
+                console.log($("#start1").val());
+                console.log($("#end1").val());
+                var ajaxUrl = "/api/Past/GetByDate/" + @id+"/" + start+"/"+end;
+                //load(ajaxUrl);
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                    });
+                });
+            });
+
+      });
+
+    </script>
+}
+
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: Verdana;
+        font-size: small
+    }
+
+    .btn {
+        /*color: #111;*/
+        /*background-color: #00C851;*/ /*active--> green*/
+        color: #6b6d6d;
+        background-color: #d6d4d4;
+        width: 110%;
+        font-family: Verdana;
+        font-size: small;
+        font-size-adjust: initial;
+        border-radius: 15px;
+    }
+        /* Style the active class, and buttons on mouse-over */
+        .btn:hover {
+            background-color: #00C851;
+            color: white;
+        }
+
+    .active {
+        background-color: #00C851;
+        color: white;
+    }
+    .cancel {
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: white;
+        color: #00C851;
+        border-color: #00C851;
+        font-size: small;
+    }
+
+    .print {
+        background-color: #00C851;
+        padding: 8px 24px;
+        border-radius: 15px;
+        font-family: Verdana;
+        color: white;
+        font-size: small;
+    }
+
+    .text-primary {
+        color: #00C851;
+    }
+    .btn-info {
+        border-radius: 15px;
+        font-family: Verdana;
+        background-color: #0889B2;
+        color: white;
+        font-size: small;
+    }
+</style>
+
+<div class="container">
+    <div class="col-sm-11" id="myDIV">
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Live" asp-controller="Progressive" asp-route-id="@id">Dynamic</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Table" asp-controller="PastHistory" asp-route-id="@id">Table</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="1">Vertical Bar</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="2">Horizontal Bar</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="3">Line</a>
+        </div>
+        <div class="col-sm-2">
+            <button style="border-radius:15px;padding:18px 18px;margin-left:10%" type="button" class="btn-info edit col-sm-offset-3" data-toggle="modal" data-target="#exportType">Export</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-sm-12" style="background-color:#f2f2f2;margin-left:3%">
+        <div style="margin-top:2%">
+            <select class="col-sm-1" style="margin-right:2%;width:10%" id="ddlYear">
+                @foreach (var item in year)
+                {
+                    <option value="@item.value">@item.text</option>
+                }
+            </select>
+
+            <select class="col-sm-1" style="margin-right:3%;width:10%" id="ddlMonth">
+                <option value="">Month</option>
+            </select>
+
+            <select class="col-sm-1" style="margin-right:3%;width:10%" id="ddlDay">
+                <option value="">Day</option>
+            </select>
+            <button id="btnCustomise" style="padding: 8px 24px;border-radius: 15px;">Customise</button>
+        </div>
+    </div>
+    @*</div>*@
+
+    <div id="customize" class="col-sm-12" style="background-color:#edeaea">
+        <div class="form-group" style="margin-top:2%">
+            <label class="control-label col-sm-2" style="color:#00C851"><b>Start Date:</b> </label>
+            <div class="col-sm-10">
+                <div class='input-group date' id='start'>
+                    <input id="start1" placeholder="DD-MM-YYYY hh:mm:ss tt" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" style="color:#00C851"><b>End Date:</b></label>
+            <div class="col-sm-10">
+                <div class='input-group date' id='end'>
+                    <input id="end1" class="form-control" placeholder="DD-MM-YYYY hh:mm:ss tt" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-8 col-sm-4" style="margin-top:2%">
+                <button id="btnOk" style="padding: 8px 24px;border-radius: 15px;margin-left:10%">OK</button>
+                <button id="btnCancel" style="padding: 8px 24px;border-radius: 15px;margin-left:5%">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="contaier col-sm-11" >
+        <canvas id="chart" width="290" height="140"></canvas>       
+    </div>        
+</div>
+
+<div class="modal fade" id="exportType" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="text-primary">Export</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @*<form asp-controller="Preference" asp-action="Setting_t" method="post" role="form" class="form-horizontal">*@
+                    <h4>Output format:</h4>
+                    <div class="form-check">
+                        <input id="XLSX" name="SelectedFormat" type="radio" class="form-check-input" checked value="XLSX" />
+                        <label for="XLSX" class="form-check-label">XLSX</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="XLS" name="SelectedFormat" type="radio" class="form-check-input" value="XLS" />
+                        <label for="XLS" class="form-check-label">XLS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="ODS" name="SelectedFormat" type="radio" class="form-check-input" value="ODS" />
+                        <label for="ODS" class="form-check-label">ODS</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="CSV" name="SelectedFormat" type="radio" class="form-check-input" value="CSV" />
+                        <label for="CSV" class="form-check-label">CSV</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="PDF" name="SelectedFormat" type="radio" class="form-check-input" value="PDF" />
+                        <label for="PDF" class="form-check-label">PDF</label>
+                    </div>
+
+                    @*</form>*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="btnExport" type="button" class="btn-primary print">Print</a>
+                <button type="button" class="btn-default cancel" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

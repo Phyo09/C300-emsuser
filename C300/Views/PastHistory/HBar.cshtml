@@ -1,0 +1,276 @@
+@*@model DateTimeRange*@
+@{
+    var id = Convert.ToInt32(ViewData["id"]);
+    var type = ViewData["type"] as String;
+    var year = ViewData["Year"] as List<dynamic>;
+    year.Insert(0, new { value = "0", text = "Year" });
+}
+@section ScriptSection {
+
+    <script language="javascript">
+
+        $(document).ready(function () {
+            //console.log($("#start1").val());
+            //console.log($("#end1").val());
+            //$('#start').datetimepicker({ format: 'DD-MM-YYYY hh:mm:ss A' });
+            //$('#end').datetimepicker({ format: 'DD-MM-YYYY hh:mm:ss A', useCurrent: false });
+            //$("#start").on("dp.change", function (e) {
+            //    $('#end').data("DateTimePicker").minDate(e.date);
+            //});
+            //$("#end").on("dp.change", function (e) {
+            //    $('#start').data("DateTimePicker").maxDate(e.date);
+            //});
+            $('#btnCustomise').show();
+            $('#btnOk').hide();
+            $('#btnCancel').hide();
+            $('#start').hide();
+            $('#end').hide();
+
+            $('#start').datetimepicker({ format: 'DD-MMM-YYYY hh:mm:ss A' });
+            $('#end').datetimepicker({ format: 'DD-MMM-YYYY hh:mm:ss A' });
+            //$('#end').datetimepicker({ format: 'DD-MM-YYYY hh:mm:ss A', useCurrent: false });
+            $("#start").on("dp.change", function (e) {
+                $('#end').data("DateTimePicker").minDate(e.date);
+            });
+            $("#end").on("dp.change", function (e) {
+                $('#start').data("DateTimePicker").maxDate(e.date);
+            });
+            var mychart = new Chart(document.getElementById("chart"), {
+             type: "horizontalBar",
+            data: {
+               labels: @Json.Serialize(ViewData["date"]),
+               datasets:
+               [
+                   {
+                       label: '@ViewData["type"]',
+                       fill: false,
+                       borderColor: '@ViewData["color"]',
+                       backgroundColor: '@ViewData["color"]',
+                       data: @Json.Serialize(ViewData["model"])
+                   }
+               ]
+            },
+            options:
+            {
+               responsive: true,
+               legend: {
+                  display: true
+               },
+               title: {
+                  display: true,
+                  text: '@ViewData["Title"]'
+               }
+            }
+            });
+
+            function SetMonth() {
+                var year = $('#ddlYear').val();
+                var apiUrl = "/api/Past/Year/" +@id+"/"+ year;
+                var ajaxUrl = "/api/past/GetByYear/" + @id+"/" + year;
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                        });
+                    });
+
+                $('#ddlMonth').html("<option selected='selected' value='0'>Month</option>");
+                $.getJSON(apiUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        $('#ddlMonth').append("<option value='" + field + "'>" + field + "</option>")
+                    });
+                });
+         }
+
+            function SetDay() {
+                var year = $('#ddlYear').val();
+                var month = $('#ddlMonth').val();
+                var apiUrl = "/api/Past/Month/" +@id+"/" + year + "/" + month;
+                var ajaxUrl = "/api/Past/GetByMonth/" + @id+"/" + year+"/"+month;
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                    });
+                });
+
+                $('#ddlDay').html("<option selected='selected' value='0'>Day</option>");
+                $.getJSON(apiUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        console.log(field)
+                        $('#ddlDay').append("<option value='" + field + "'>" + field + "</option>")
+                    });
+                });
+            }
+
+            function GetByDay() {
+                var year = $('#ddlYear').val();
+                var month = $('#ddlMonth').val();
+                var day = $('#ddlDay').val();
+                var ajaxUrl = "/api/Past/GetByDay/" + @id+"/" + year + "/" + month + "/" + day;
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                    });
+                });
+            }
+            $('#ddlYear').change(SetMonth);
+            $('#ddlMonth').change(SetDay);
+            $('#ddlDay').change(GetByDay);
+            $('#btnCustomise').click(function () {
+                $('#btnCustomise').hide();
+                $('#btnOk').show();
+                $('#btnCancel').show();
+                $('#start').show();
+                $('#end').show();
+            });
+            $('#btnCancel').click(function () {
+                $('#btnCustomise').show();
+                $('#btnOk').hide();
+                $('#btnCancel').hide();
+                $('#start').hide();
+                $('#end').hide();
+            });
+            $('#btnOk').click(function () {
+                var start = $("#start1").val();
+                var end = $("#end1").val();
+                console.log(start)
+                console.log(end)
+                console.log($("#start1").val());
+                console.log($("#end1").val());
+                var ajaxUrl = "/api/Past/GetByDate/" + @id+"/" + start+"/"+end;
+                //load(ajaxUrl);
+                mychart.data.datasets[0].data = []
+                mychart.data.labels = []
+                mychart.update();
+                $.getJSON(ajaxUrl, function (result) {
+                    $.each(result, function (i, field) {
+                        mychart.data.datasets[0].data.push(field.level);
+                        mychart.data.labels.push(field.datetime);
+                        mychart.update();
+
+                    });
+                });
+            });
+
+      });
+
+    </script>
+}
+
+<style>
+    .btn-default {
+        background-color: deepskyblue;
+        color: #111;
+        width: 100%
+    }
+</style>
+
+<br />
+@*<form class="form-horizontal" asp-action="VBar">
+        <div class="form-group">
+            <div class="col-sm-offset-1 col-sm-4">
+                Start Date:
+                <div class='input-group date' id='start'>
+                    <input id="start1" class="form-control"
+                           placeholder="DD-MM-YYYY hh:mm:ss tt" asp-for="Start" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                End Date:
+                <div class='input-group date' id='end'>
+                    <input id="end1" class="form-control"
+                           placeholder="DD-MM-YYYY hh:mm:ss tt" asp-for="End" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <br />
+            <div class="col-sm-3">
+                <input type="submit" class="btn btn-primary" value="Submit" />
+            </div>
+        </div>
+    </form>*@
+
+
+<div class="col-sm-offset-2 col-sm-10">
+    <div class="col-sm-2">
+        <a class="btn btn-default" asp-action="Live" asp-controller="Progressive" asp-route-id="@id">Dynamic</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn btn-default" asp-action="Table" asp-controller="PastHistory" asp-route-id="@id">Table</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn btn-default" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="1">Vertical Bar</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn btn-default" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="1">Horizontal Bar</a>
+    </div>
+    <div class="col-sm-2">
+        <a class="btn btn-default" asp-action="Chart" asp-controller="PastHistory" asp-route-id="@id" asp-route-type="1">Line</a>
+    </div>
+</div>
+<br />
+<div class="col-sm-offset-1 col-sm-10" style="background-color:antiquewhite">
+
+    <select class="col-sm-1" style="margin-right:3%;width:9%" id="ddlYear">
+        @foreach (var item in year)
+            {
+            <option value="@item.value">@item.text</option>
+        }
+    </select>
+
+    <select class="col-sm-1" style="margin-right:3%;width:9%" id="ddlMonth">
+        <option value="">Month</option>
+    </select>
+
+    <select class="col-sm-1" style="margin-right:3%;width:9%" id="ddlDay">
+        <option value="">Day</option>
+    </select>
+    <button id="btnCustomise" style="padding: 8px 24px;">Customise</button>
+</div>
+
+<div class="col-sm-offset-1 col-sm-10" style="background-color:antiquewhite">
+    <div class='input-group date' id='start'>
+        <label>Start Date:</label>
+        <input id="start1" class="form-control"
+               placeholder="DD-MM-YYYY hh:mm:ss tt" />
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>
+    <div class='input-group date' id='end'>
+        <label>End Date:</label>
+        <input id="end1" class="form-control"
+               placeholder="DD-MM-YYYY hh:mm:ss tt" />
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>
+    <button id="btnOk">OK</button>
+    <button id="btnCancel">Cancel</button>
+</div>
+<br />
+<div class="col-sm-offset-1 col-sm-8" style="width:60%;height:20%;margin-top:3%;margin-left:13%">
+    <canvas id="chart" width="600" height="400"></canvas>
+</div>

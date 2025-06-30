@@ -1,0 +1,224 @@
+@model Feedback
+@{
+    var feedback = ViewData["feedbacks"] as List<dynamic>;
+    //feedback.Insert(0, new { value = "", text = "--SELECT--" });
+
+
+    string msg = ViewData["Msg"] as string;
+}
+<style>
+    h1 {
+        font-weight: bold;
+        /*font-size: 10vw*/
+    }
+
+
+    textarea {
+        resize: none
+    }
+
+    p {
+        font-style: italic
+    }
+
+    .container-create {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 15px;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        background-color: white;
+        box-sizing: border-box;
+        box-shadow: initial;
+    }
+
+    .wrap-create {
+        width: 500px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        -webkit-box-shadow: 0 3px 20px 0px rgba(0,0,0,0.1);
+    }
+    /*input[type=text] {
+        border: 2px solid orange;
+        border-radius: 4px;
+    }*/
+
+    #des:focus {
+        border: 3px solid #00bfff;
+    }
+
+    #type:focus {
+        border: 3px solid #00bfff;
+    }
+
+    label {
+        font-weight: bold
+    }
+
+    input[type=text]:focus {
+        border: 3px solid #00bfff;
+    }
+</style>
+
+@section ScriptSection {
+
+    <script>
+
+
+
+
+        $(document).ready(function() {
+            $("#name").each(function() {
+                $(this).val("");
+                    });
+
+        $("#email").each(function() {
+                $(this).val("");
+                    });
+
+        $("#contact").each(function() {
+                $(this).val("");
+                    });
+        $("#des").each(function() {
+                $(this).val("");
+                    });
+
+            $("select").each(function() {
+                $(this).val("");
+                });
+            });
+
+
+    </script>
+}
+
+
+<h1 style="color:orange ; text-align:center">Feedback Form</h1>
+<p style="text-align:center">We would love to hear your thoughts, concerns or problems with anything so that we can improve!</p>
+<hr />
+
+
+
+<form asp-controller="Feedback" asp-action="Create" method="post" class="form-horizontal" role="form">
+
+    <div class="form-horizontal">
+
+
+        @if (msg != null)
+            {
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-4">
+                    <div class="alert alert-danger">
+                        <strong>@msg</strong>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-6">
+                <span style="color:red;text-align:left">@TempData["Msg"]</span>
+            </div>
+        </div>
+        @if (User.Identity.IsAuthenticated)
+            {
+            <div class="form-group">
+                <label asp-for="Name" class="col-sm-3 control-label">Name: </label>
+                <div class="col-sm-4">
+                    <input asp-for="Name" readonly="readonly" class="form-control" value="@User.Identity.Name" />
+                </div>
+                @*<div class="has-error">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>*@
+            </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="col-sm-3 control-label">Email: </label>
+                    <div class="col-sm-4">
+                        <input asp-for="Email" readonly="readonly" class="form-control" value="@ViewData["email"]" />
+                    </div>
+                    @*<div class="has-error">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>*@
+                </div>
+
+        }
+
+        else
+        { <div class="form-group">
+                <label asp-for="Name" class="col-sm-3 control-label">Name: </label>
+                <div class="col-sm-4">
+                    @*<input asp-for="Name"  class="form-control" value="@Model.Name"/>*@
+                    <input id="name" asp-for="Name" class="form-control" />
+                </div>
+                <div class="has-error">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="col-sm-3 control-label">Email: </label>
+                    <div class="col-sm-4">
+                        @*<input asp-for="Email" class="form-control" value="@Model.Email" />*@
+                        <input id="email" type="text" asp-for="Email" class="form-control" />
+                    </div>
+                    <div class="has-error">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+        }
+
+        <div class="form-group">
+            <label asp-for="Contact" class="col-sm-3 control-label">Contact Number(Singapore only): </label>
+            <div class="col-sm-4">
+                @*<input asp-for="Contact" class="form-control" value="@Model.Email" />*@
+                <input id="contact" type="text" asp-for="Contact" class="form-control" />
+            </div>
+            <div class="has-error">
+                <span asp-validation-for="Contact" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-3" asp-for="FeedbackType">Feedback Type: </label>
+            <div class="col-sm-4">
+                <select id="type" class="form-control col-sm-3" asp-for="FeedbackType" value="@Model.FeedbackType">
+                    <option selected="selected" value="">--SELECT--</option>
+                    @foreach (var item in feedback)
+                    {
+                        <option value="@item.value">@item.text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="has-error">
+                <span asp-validation-for="FeedbackType" class="text-danger"></span>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="Description" class="col-sm-3 control-label">Describe Feedback: </label>
+            <div class="col-sm-4">
+                @*<input asp-for="Description" class="form-control" value="@Model.Description"/>*@
+                <textarea rows="4" id="des" asp-for="Description" class="form-control"></textarea>
+            </div>
+            <div class="has-error col-sm-3">
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-6">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+
+            </div>
+        </div>
+    </div>
+</form>

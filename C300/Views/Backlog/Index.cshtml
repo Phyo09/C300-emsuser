@@ -1,0 +1,124 @@
+@using C300.Models
+@model List<Backlog>
+    @{
+        ViewBag.Title = "All Backlogs";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    @section ScriptSection {
+        
+    @*for styling table tech style*@
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.1.0/material.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.material.min.css" />
+        <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.material.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#table').DataTable({
+                    columnDefs: [
+                        {
+                            targets: [0, 1, 2],
+                            className: 'mdl-data-table__cell--non-numeric'
+                        }
+                    ]
+                });
+
+            });
+        </script>
+    }
+    <style>
+        .export-form-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0, 20px;
+            width: 20%;
+            height: 5%;
+            background-color: #57b846;
+            border-radius: 25px;
+            font-family: 'Microsoft Sans Serif';
+            font-size: 15px;
+            color: white;
+            line-height: 0;
+            text-transform: uppercase;
+            transition: all 0.4s;
+        }
+
+        th {
+            background-color: #46B6E2;
+        }
+    </style>
+
+
+    <h3 style="color:black; font-weight:bold ; text-align:left">Users Action History</h3>
+    <hr />
+    <div class="container col-sm-12">
+        <div class="col-sm-12">
+            <div class="col-sm-6">
+                <div class="input-group col-sm-12">
+                    @*Generate & Download Excel file of different formats*@
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <h4>Download Table Information:</h4>
+                        <div class="form-check">
+                            <input id="XLSX" name="SelectedFormat" type="radio" class="form-check-input" checked value="XLSX" />
+                            <label for="XLSX" class="form-check-label">XLSX</label>
+                            <input id="XLS" name="SelectedFormat" type="radio" class="form-check-input" value="XLS" />
+                            <label for="XLS" class="form-check-label">XLS</label>
+                            <input id="ODS" name="SelectedFormat" type="radio" class="form-check-input" value="ODS" />
+                            <label for="ODS" class="form-check-label">ODS</label>
+                            <input id="CSV" name="SelectedFormat" type="radio" class="form-check-input" value="CSV" />
+                            <label for="CSV" class="form-check-label">CSV</label>
+                            <input id="PDF" name="SelectedFormat" type="radio" class="form-check-input" value="PDF" />
+                            <label for="PDF" class="form-check-label">PDF</label>
+                        </div>
+                        <button type="submit" class="export-form-btn">Export</button>
+                    </form>
+                </div>
+            </div>
+            <hr />
+            @*<div class="col-sm-6" style="margin-top:1%">
+                    <input checked="checked" id="rbAll" name="search" type="radio" /><b class="radioSearch">All</b>
+                    <input id="rbId" name="search" type="radio" /><b class="radioSearch">Id</b>
+                    <input id="rbName" name="search" type="radio" /><b class="radioSearch">Name</b>
+                    <input id="rbLogId" name="search" type="radio" /><b class="radioSearch">Log Id</b>
+                    <input id="rbAction" name="search" type="radio" /><b class="radioSearch">Action</b>
+                </div>*@
+        </div>
+        <table id="table" class="mdl-data-table col-sm-11" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">User ID</th>
+                    <th class="col-sm-1">Name</th>
+                    <th class="col-sm-1">Log Id</th>
+                    <th class="col-sm-1">DateTime</th>
+                    <th class="col-sm-1">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Backlog log in Model)
+                {
+                    if (ViewBag.ByUserId == true)
+                {
+                        <tr>
+                            <td>@log.UserId</td>
+                            <td><a href="/Emsuser/Index" style="color:deepskyblue; font-weight:500">@log.Name</a></td>
+                            <td>@log.BacklogId</td>
+                            <td>@String.Format("{0:yyyy-MM-dd HH:mm:ss}", log.Datetime)</td>
+                            <td>@log.Action</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@log.UserId</td>
+                            <td><a href="/Emsuser/Index" style="color:deepskyblue; font-weight:500">@log.Name</a></td>
+                            <td>@log.BacklogId</td>
+                            <td>@String.Format("{0:yyyy-MM-dd HH:mm:ss}", log.Datetime)</td>
+                            <td>@log.Action</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>

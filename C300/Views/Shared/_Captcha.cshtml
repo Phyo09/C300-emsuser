@@ -1,0 +1,15 @@
+﻿@using C300.Models
+@model CaptchaResult
+
+<div class="form-group">
+    <div class="wrap-input validate-input m-b-16">
+        <h6><b><color style="color:black; margin-left:auto; font-size:medium;">Please enter text shown on the image below.</color></b></h6>
+        <img src="/Captcha/GetImage" id="refreshcaptcha" />
+        <img src="~/images/refresh (1).png" style="width:8%;height:8%;" alt="Click to reload captcha" title="Click to reload captcha" id="captchareload" onclick="document.getElementById('refreshcaptcha').src = '/Captcha/GetImage' + '?t=' + new Date().getTime(); return false" />
+        <a class="recode" id="refresh" onclick="document.getElementById('refreshcaptcha').src = '/Captcha/GetImage' + '?t=' + new Date().getTime(); return false" href="#">Refresh</a>
+        <input asp-for="CaptchaCode" class="form-control" style="margin-top:2%;" placeholder="Enter captcha here">
+        <div class="has-error">
+            <span asp-validation-for="CaptchaCode" class="text-danger"></span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,674 @@
+﻿<!DOCTYPE html>
+<html>
+@{
+    var pre = ViewData["preference"] as Preference;
+}
+<head>
+    @await Component.InvokeAsync("NToastNotify.Toastr")
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="~/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/lib/scripts/Chart.min.js"></script>
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    @*<link rel="stylesheet" href="style.css" />*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> @*icon*@
+    <link href="https://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.css" rel="stylesheet" />
+
+    <script src="~/lib/jquery-validation/src/core.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <link href="~/lib/CodeSeven-toastr-61c48a6/build/toastr.css" rel="stylesheet" />
+    <script src="~/lib/CodeSeven-toastr-61c48a6/toastr.js"></script>
+
+    <style>
+        .input-group-addon {
+            cursor: pointer;
+        }
+
+        #BsDateTimePicker {
+            cursor: pointer;
+        }
+
+        .btn-default {
+            color: white;
+            border-style: solid;
+            border-color: #A9DEC9;
+            font-size: medium;
+        }
+
+        .navbar-default a {
+            font-size: small;
+            font-family: Verdana;
+        }
+
+        .nav.navbar-nav li a {
+            color: white;
+            font-size: small;
+            font-family: Verdana;
+        }
+
+        .nav.navbar-nav.navbar-right li a {
+            color: white;
+        }
+
+        .side-nav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 50px;
+            opacity: 1;
+            transition: 0.3s;
+        }
+
+            .side-nav a {
+                padding: 10px 10px 10px 30px;
+                text-decoration: none;
+                display: block;
+                font-size: 20px;
+                color: #ccc;
+                transition: 0.5s;
+            }
+
+
+            .side-nav .btn-close {
+                position: absolute;
+                top: 0;
+                right: 0px;
+                font-size: 36px;
+                margin-left: 0px;
+            }
+            /* Style the sidenav links and the dropdown button */
+            .side-nav a, .dropdown-btn {
+                padding: 10px 10px 10px 30px;
+                text-decoration: none;
+                /*font-size: 20px;*/
+                color: #818181;
+                display: block;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                outline: none;
+            }
+                /*.side-nav i {
+            font-size: 30px;
+        }*/
+
+                /* On mouse-over */
+                .side-nav a:hover, .dropdown-btn:hover {
+                    color: #f1f1f1;
+                }
+
+        .dropdown-container {
+            display: none;
+            background-color: dimgrey
+            /*background-color: #262626;*/
+        }
+
+        /* Optional: Style the caret down icon */
+        .fa-caret-down {
+            float: right;
+            padding-right: 8px;
+        }
+
+        .main {
+            margin-left: 7%; /* Same as the width of the sidenav */
+            font-size: small; /* Increased text to enable scrolling */
+            font-family: Verdana;
+        }
+
+        body {
+            font-size: small;
+            font-family: Verdana;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 7%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+            .sidenav a {
+                padding: 16px 16px 16px 16px;
+                text-decoration: none;
+                font-size: 30px;
+                color: #818181;
+                display: block;
+                margin-left: 7%;
+            }
+
+                .sidenav a:hover {
+                    color: #f1f1f1;
+                }
+
+        .welcome {
+            font-size: medium;
+            font-family: Verdana;
+        }
+
+        #main {
+            transition: margin-left 0.4s;
+            padding: 20px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+            background-color: #17A2B8;
+        }
+
+        .dropdown-menu {
+            top: 60px;
+            right: 0px;
+            left: unset;
+            width: 460px;
+            box-shadow: 0px 5px 7px -1px #c1c1c1;
+            padding-bottom: 0px;
+            padding: 0px;
+        }
+
+            .dropdown-menu:before {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 12px;
+                border: 10px solid #343A40;
+                border-color: transparent transparent #343A40 transparent;
+            }
+
+        .footer {
+            padding: 5px 15px;
+            border-radius: 0px 0px 3px 3px;
+        }
+
+        .notification-box {
+            padding: 10px 0px;
+        }
+
+        .bg-gray {
+            background-color: #eee;
+        }
+
+        @@media (max-width: 640px) {
+            .dropdown-menu {
+                top: 50px;
+                left: -16px;
+                width: 290px;
+            }
+        }
+        .nav {
+            display: block;
+        }
+
+            .nav .nav-item, .nav .nav-item a {
+                padding-left: 0px;
+            }
+
+        .message {
+            font-size: 13px;
+        }
+
+
+
+
+    </style>
+
+    <script>
+
+
+        function openMenu() {
+            document.getElementById("menu").style.width = "200px";
+            document.getElementById("main").style.marginLeft = "200px";
+        }
+        function closeMenu() {
+            document.getElementById("menu").style.width = "0px";
+            document.getElementById("main").style.marginLeft = "0px";
+        }
+        //document.getElementById('sidenav').onmouseover = function () {
+        //    document.getElementById("menu").style.width = "200px";
+        //    document.getElementById("main").style.marginLeft = "200px";
+        //}
+        $(document).ready(function () {
+            $('#sidenav').hover(
+                function () {
+                    $('#menu').css('width', '220px');
+                });
+            $('#menu').hover(
+                function () {
+                    $('#menu').css('width', '220px');
+                },
+                function () {
+                    $('#menu').css('width', '0px');
+                });
+            //$(function () {
+            //    $('#BsDateTimePicker').datetimepicker({
+            //        //format: 'YYYY-MM-DD'
+            //        format: 'DD-MM-YYYY hh:mm:ss A'
+            //    });
+            //});
+
+            //notification->Phyo
+            $.ajaxSetup({ cache: false });
+                timerLive = setInterval(AjaxLive, "1000");
+                timerNoti = setInterval(AjaxCheck, "15000");
+            function AjaxLive() {
+                    //$.getJSON("/Progressive/Update",function (data) {
+                    //        console.log(data)                           
+                    //});
+                var ajaxUrl = "http://api.thingspeak.com/channels/541487/feed.json?key=J25VZR7MUMM8RJ4O&location=false"
+                $.getJSON(ajaxUrl, function (result) {
+                    var last = result.feeds[result.feeds.length - 1];
+                    var datetime = last.created_at;
+                    datelist = datetime.split("T")
+                    time = datelist[1].split("Z")
+
+                    var temp = last.field1;
+                    if (temp == null) {
+                        temp = 0.0
+                    }
+
+                    var hum = last.field3;
+                    if (hum == null) {
+                        hum = 0.0
+                    }
+
+                    var light = last.field2;
+                    if (light == null) {
+                        light = 0.0
+                    }
+
+                    var weight = last.field4;
+                    if (weight == null) {
+                        weight = 0.0
+                    }
+                    var datetime = datelist[0] + " " + time[0]
+                    //console.log(datetime)
+                    $.getJSON(
+                        "/api/sql/upload/" + temp +"/"+hum+"/"+light+"/"+weight+ "/" + datetime,
+                        function (data) {
+                            console.log(data)
+
+                        }
+                    );  
+
+                });
+            }
+
+            function AjaxCheck() {
+                $.getJSON(
+                    "/Notification/Temperature",
+                    function (data) {
+                        //console.log("Temp"+data)
+                        if (@pre != null && @pre.HighestTemp != 0 && @pre.TempNoti == 1){
+                            if (data > @pre.HighestTemp){
+                                toastr.warning("The temperature is over " + @pre.HighestTemp + ". The current temperature is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else if (data < @pre.LowestTemp){
+                                toastr.warning("The temperature is below " + @pre.LowestTemp + ". The current temperature is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else {
+                                clearInterval(timerNoti)
+                                timerNoti = setInterval(AjaxCheck, "15000");
+
+                            }
+                        }
+                    }
+                );
+                $.getJSON(
+                    "/Notification/Humidity",
+                    function (data) {
+                        //console.log(data)
+                        if (@pre.HighestHumidity != 0 && @pre.HumNoti == 1) {
+                            if (data > @pre.HighestHumidity){
+                            //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The humidity is over " + @pre.HighestHumidity + ". The current humidity is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else if (data < @pre.LowestHumidity){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The humidity is below " + @pre.LowestHumidity + ". The current humidity is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else {
+                                clearInterval(timerNoti)
+                                timerNoti = setInterval(AjaxCheck, "15000");
+
+                            }
+                        }
+                    }
+                );
+                $.getJSON(
+                    "/Notification/Light",
+                    function (data) {
+                        //console.log(data)
+                        if (@pre.HighestLight != 0 && @pre.LightNoti == 1) {
+                            if (data > @pre.HighestLight){
+                            //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The light is over " + @pre.HighestLight + ". The current light is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else if (data < @pre.LowestLight){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The light is below " + @pre.LowestLight + ". The current light is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else {
+                                clearInterval(timerNoti)
+                                timerNoti = setInterval(AjaxCheck, "15000");
+
+                            }
+                        }
+                    }
+                );
+                $.getJSON(
+                    "/Notification/Weight",
+                    function (data) {
+                        if (@pre.HighestWeight != 0 && @pre.WeightNoti == 1) {
+                            if (data > @pre.HighestWeight){
+                            //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The force is over " + @pre.HighestWeight + ". The current force is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else if (data < @pre.LowestWeight){
+                                //toastr.warning('Yes! You have successfully completed your task!', 'Congratulation for you, Mahedee!')
+                                toastr.warning("The force is below " + @pre.LowestWeight+ ". The current force is " + data)
+                                //clearInterval(timerNoti)
+                                //timerNoti = setInterval(AjaxCheck, "300000");
+                            }
+                            else {
+                                clearInterval(timerNoti)
+                                timerNoti = setInterval(AjaxCheck, "15000");
+
+                            }
+                        }
+                    }
+                );
+            }
+
+            //notification -> Rohan
+            var nCount = 0;
+            function retrieveTemperature() {
+                //console.log("In retrieve Temp");
+                $("#notificationCount").html(notificationCount);
+                $.ajax({
+                    url: '/Notification/_RetrieveTemp',
+                    type: 'get',
+                    error: function (jqXhr, textStatus, errorThrown) {
+                        //console.log(errorThrown);
+
+                    },
+                    success: function (json, textStatus, jqXHR) {
+                        //console.log("JSONSTRING:" + json);
+                        var data = eval('(' + json + ')');
+                        console.log("Message:" + data);
+                        if (data != "") {
+                            $("#notificationDropdown > li").slice(1).remove();
+                            var arr = data.split(";");
+                            nCount = arr.length;
+                            $("#notificationCount").html("(" + nCount + ")");
+                            var htmlString = "";
+                            for (var i = 0; i < arr.length; i++) {
+                                htmlString += "<li class='notification- box'>";
+                                htmlString += "<div class='row' style='border-bottom-style: solid;border-bottom-color: lightgray;'>";
+                                htmlString += "<div class='col-lg-8 col-sm-8 col-8'>";
+                                htmlString += "<strong class='text- info'>" + arr[i] + "</strong>";
+                                htmlString += "<div>" + formatAMPM() + "</div>";
+                            }
+                            htmlString += "</div></div></li>";
+                            $("#notificationDropdown").append(htmlString);
+                        }
+
+                    }
+                });
+                setTimeout(retrieveTemperature, 10000);
+            }
+
+            setTimeout(retrieveTemperature, 5000);
+
+            function formatAMPM() {
+                var d = new Date(),
+                    seconds = d.getSeconds().toString().length == 1 ? '0' + d.getSeconds() : d.getSeconds(),
+                    minutes = d.getMinutes().toString().length == 1 ? '0' + d.getMinutes() : d.getMinutes(),
+                    hours = d.getHours().toString().length == 1 ? '0' + d.getHours() : d.getHours(),
+                    ampm = d.getHours() >= 12 ? 'pm' : 'am',
+                    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                return days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ' ' + d.getFullYear() + ' ' + hours + ':' + minutes + ":" + seconds + ampm;
+            }
+
+        });
+    </script>
+
+
+    @RenderSection("ScriptSection", false)
+</head>
+<body>
+    <div id="sidenav" class="sidenav" onclick="openMenu()">
+        @*<a href="#" onclick="openMenu()"><i class="fa fa-home"></i></a>
+        <a href="#" onclick="openMenu()"><i class="fa fa-users"></i></a>
+        <a href="#" onclick="openMenu()"><i class="fa fa-bar-chart"></i></a>
+        <a href="#" onclick="openMenu()"><i class="fa fa-cog"></i></a>
+        <a href="#" onclick="openMenu()"><i class="fa fa-user"></i></a>
+        <a href="#" onclick="openMenu()"><i class="fa fa-comments"></i></a>*@
+        <a href="#"><i class="fa fa-home"></i></a>
+        @if (User.Identity.IsAuthenticated)
+        {
+        <a href="#"><i class="fa fa-window-maximize"></i></a>
+        <a href="#"><i class="fa fa-user"></i></a>
+        <a><span class="fa fa-table" style="margin-right:5%"></span></a>
+        <a href="#"><i class="fa fa-bar-chart"></i></a>
+        <a href="#"><i class="fa fa-cogs"></i></a>
+        }
+        <a href="#"><i class="fa fa-comments"></i></a>
+@if (User.Identity.IsAuthenticated)
+{
+        <a href="#"><i class="fa fa-print"></i></a>
+        }
+
+        
+    </div>
+    <nav class="navbar navbar-default main" role="navigation" style="background-color: #00C851">
+        <div class="container-fluid col-sm-12">
+            @*<div class="navbar-header col-sm-2" style="margin-right:1%;right:4%;background-color:aliceblue">
+                <img class="col-sm-1" src="~/images/EMS-Logo.png" style="width:70%;height:70%;margin-top:8%;margin-left:4%" />
+                <div class="col-sm-5" style="width:100px">
+                    <img class="col-sm-6" src="~/images/EMS-Logo.png" style="width:70px;height:60px;margin-top:8%;background-color:antiquewhite" />
+                </div>
+                <div class="col-sm-2">
+                    <p class="col-sm-6" style="right:0%"><b style="font-style:oblique;font-size:10px;background-color:aqua">Environement Monitoring System</b></p>
+                </div>
+            </div>*@
+            @*<div class="navbar-header col-sm-2" style="background-color:aquamarine">
+                *@
+                @*<img class="col-sm-6" src="~/images/EMS-Logo.png" style="width:65px;height:55px;margin-top:8%;right:30%;background-color:antiquewhite" />
+                <p class="col-sm-6" style="right:30%"><b style="font-style:oblique;font-size:12px;background-color:aqua">Environement Monitoring System</b></p>*@
+                @*<a class="navbar-brand" href="#"><img class="col-sm-6" src="~/images/EMS-Logo.png" style="width:65px;height:55px;margin-top:8%;background-color:antiquewhite" />Environement Monitoring System</a>*@
+                @*
+            </div>*@
+            <div class="col-sm-1" style="right:2%;width:90px">
+                <img class="" src="~/images/EMS-Logo.png" style="width:75px;height:65px;margin-top:20%" />
+            </div>
+            <div class="col-sm-1" style="right:4%;margin-top:1%">
+                <p class=""><b style="font-style:oblique;font-size:15px">Environement Monitoring System</b></p>
+            </div>
+
+            <ul class="nav navbar-nav col-sm-7" style="padding-top:2%">
+                <li>
+                    <a asp-action="Index" asp-controller="Home">HOME</a>
+                </li>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                <li>
+                    <a asp-action="Dynamic" asp-controller="Progressive">LIVE DATA</a>
+                </li>
+                }
+
+                <li>
+                    <a asp-action="FAQ" asp-controller="Home">HELP & FAQ</a>
+                </li>
+                @if (User.IsInRole("Admin"))
+                {
+                <li>
+                    <a asp-action="Index" asp-controller="Emsuser">View Users</a>
+                </li>
+                }
+                @if (User.Identity.IsAuthenticated)
+                {
+                <li>
+                    <a asp-action="Index" asp-controller="Forum">Forum</a>
+                </li>
+                <li>
+                    <a asp-action="Status" asp-controller="Emsuser">Status</a>
+                </li>
+                <li><a asp-action="Index" asp-controller="Calender">Calender</a></li>
+                }
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right col-sm-3" style="padding-top:2%">
+                @if (User.Identity.IsAuthenticated)
+                {
+                <li class="col-sm-6" style="margin-top:auto">
+                    <p class="welcome" style="color:whitesmoke">
+                        Welcome @User.Identity.Name
+                    </p>
+                </li>
+                <li class="col-sm-6" style="padding-left:6%;padding:0px 1px">
+                    <a asp-action="Logoff" asp-controller="Account" class="btn-default" role="button"
+                       style="background-color:#5A9BD5">
+                        @*#5DBCD2*@
+                        <span class="glyphicon glyphicon-log-out"></span> LOGOUT
+                    </a>
+                </li>
+                }
+                else
+                {
+                <li style="margin-left:0%">
+                    @*; color:lightseagreen*@
+                    @*#00C851*@
+                    <a class="btn-default" role="button" style="background-color:#00C851;"
+                       asp-action="Login" asp-controller="Account">
+                        <span class="glyphicon glyphicon-log-in"></span> LOGIN
+                    </a>
+                </li>
+                <li style="padding-left:10%">
+                    <a asp-action="Registration" asp-controller="Account"class="btn-default" id="singup" role="button" style="background-color:#5A9BD5">
+                        @*#46B1D5*@ SIGN UP
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+    </nav>
+
+    <div id="menu" class="side-nav">
+        <a href="#" class="btn-close" onclick="closeMenu()">&times;</a>
+        <a asp-action="Index" asp-controller="Home"><i class="fa fa-home" style="font-size: 20px;margin-right:5%"></i>Home</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+        <a asp-action="Dashboard" asp-controller="PastHistory"><i class="fa fa-window-maximize" style="font-size: 20px;margin-right:5%"></i>Dashboard</a>
+        <a asp-action="Profile" asp-controller="Emsuser"><span class="fa fa-user" style="margin-right:8%"></span>My Profile</a>
+        @if (User.IsInRole("Admin"))
+        {
+        <a asp-action="Index" asp-controller="Emsuser"><span class="fa fa-users" style="margin-right:5%"></span>View Users</a>
+        }
+        <a class="dropdown-btn">
+            <span class="fa fa-table" style="margin-right:5%"></span> Table &<br /> <span class="fa fa-bar-chart" style="margin-right:5%"></span>Graph
+            <i class="fa fa-caret-down"></i>
+        </a>
+        <div class="dropdown-container">
+            <a style="color:black" asp-action="Table" asp-controller="PastHistory" asp-route-id="1">Temperature</a>
+            <a style="color:black" asp-action="Table" asp-controller="PastHistory" asp-route-id="2">Humidity</a>
+            <a style="color:black" asp-action="Table" asp-controller="PastHistory" asp-route-id="3">Light</a>
+            <a style="color:black" asp-action="Table" asp-controller="PastHistory" asp-route-id="4">Weight</a>
+        </div>
+        <a asp-action="Setting" asp-controller="Preference"><span class="fa fa-cog" style="margin-right:8%"></span>Preference</a>
+        
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Index" asp-controller="Backlog"><span class="fa fa-book" style="margin-right:8%"></span>Backlog</a>
+        }
+
+
+        }
+        <a asp-action="Create" asp-controller="Feedback"><span class="fa fa-comments" style="margin-right:6%"></span>FeedBack</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="ViewFeedback" asp-controller="Feedback"><span class="fa fa-comments-o" style="margin-right:6%"></span>View FeedBack</a>
+        }
+@if (User.Identity.IsAuthenticated)
+{
+        <a asp-action="Export" asp-controller="Print"><span class="fa fa-print" style="margin-right:6%"></span>Print</a>
+}
+    </div>
+
+     <li class="nav-item dropdown " style="margin-left:95%">
+        <a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-bell" style="font-size:25px;"></i>
+        </a>
+        <ul id="notificationDropdown" class="dropdown-menu">
+            <li class="head text-light bg-dark" style="border-bottom-style: solid;border-bottom-color: lightgray;">
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12">
+                        <span>Notifications <span id="notificationCount">(0)</span></span>
+                        <a href="" class="float-right text-light">Mark all as read</a>
+                </div>
+            </li>
+        </ul>
+    </li>
+
+
+    <div class="container body-content col-sm-12 main">
+        @RenderBody()
+    </div>
+
+    <script>
+        /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                } else {
+                    dropdownContent.style.display = "block";
+                }
+            });
+        }
+    </script>
+
+
+</body>
+</html>
